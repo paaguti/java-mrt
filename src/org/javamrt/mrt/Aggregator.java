@@ -1,4 +1,10 @@
-package org.javamrt.mrt; 
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
+package org.javamrt.mrt;
 import java.net.InetAddress;
 
 import org.javamrt.utils.RecordAccess;
@@ -8,11 +14,11 @@ public class Aggregator
     implements Attribute
 {
     protected int asSize = 2;
-    
+
     protected Aggregator() // for As4Aggregator
     {
     }
-    
+
     public Aggregator (byte[] buffer)
 	throws Exception
     {
@@ -26,36 +32,36 @@ public class Aggregator
 	this.asSize = size;
 	decode(buffer);
     }
-    
+
     private void decode (byte[] buffer)
 	throws Exception
     {
 	int len = buffer.length;
-	
+
 	if ((len-asSize != 4) && (len-asSize != 16))
 	    throw new Exception (String.format("Aggregator with %d bytes (must be %d or %d)",
 					       len,4+asSize,16+asSize));
-	
+
 	aggregatorAS = new AS(RecordAccess.getBytes (buffer, 0,asSize));
 	byte[] aip = RecordAccess.getBytes (buffer, asSize, len - asSize);
 	aggregatorIP = InetAddress.getByAddress (aip);
     }
-  
+
     public String toString ()
     {
 	return aggregatorAS + " " + aggregatorIP.getHostAddress ();
     }
-    
+
     public AS getAs()
   {
       return aggregatorAS;
   }
-    
+
     public InetAddress getIP()
     {
 	return aggregatorIP;
     }
-    
+
     public boolean equals(Object o) {
     	if (o == null) return false;
     	if (o == this) return true;

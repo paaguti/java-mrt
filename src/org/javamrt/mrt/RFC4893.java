@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import org.javamrt.utils.RecordAccess;
@@ -5,17 +11,17 @@ import org.javamrt.utils.RecordAccess;
 
 /**
  * @author paag
- * 
+ *
  *         replaces the AS4PATH segment in the ASPATH, following RFC4883 4 byte
  *         ASN's from AS4PATH attribute (raw input as bytes)
- * 
- * 
+ *
+ *
  *         throws RFC4893Exception if ConfedSequence or ConfedSet is found
  *         throws AttributeException if the ASPATH was not previously defined
  *  @version 1.00
  *  todov1.00: Use ASPath to create the 4 byte ASPATH chunk
  *  @version 2.00
- *  
+ *
  */
 public class RFC4893 {
 	private static boolean DEBUG = false;
@@ -41,7 +47,7 @@ public class RFC4893 {
 		 *    AS_CONFED_SEQUENCE and AS_CONFED_SET [RFC3065] are declared invalid
 		 *    for the AS4_PATH attribute.
          */
-		
+
 		for (AS as4:as4path.path) {
 			if (as4 instanceof ASConfedSet || as4 instanceof ASConfedSequence)
 				throw new RFC4893Exception(MRTConstants.asConfedSequence, aspath,as4path);

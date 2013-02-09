@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import org.javamrt.utils.RecordAccess;
@@ -10,16 +16,16 @@ public class Nlri
     // from Prefix.java
     //   byte[] addr;
     //   int    maskLength;
-    
+
     public Nlri (byte[]record, int offset, int afi)
 	throws Exception
-	   
+
   {
       super();
     /*
       Receives whole BGP update package as byte [] record with integer offset as indicator of the position of length field
       integer afi is used for deciding the type of address
-      masklen value is inside length octet, where the value is given in bits 
+      masklen value is inside length octet, where the value is given in bits
       +---------------------------+
       |   Length (1 octet)        |
       +---------------------------+
@@ -39,28 +45,28 @@ public class Nlri
 	{
 	    this.bytes=(this.maskLength-1)/8+1; //converting bits into bytes and deciding number of bytes to be read
 	}
-    
+
     int i=0;
-    
+
     while (i < bytes)
       this.base[i++] = (byte)RecordAccess.getU8(record,offset++); //extracting byte by byte of prefix field
-    //and adding to address array	
+    //and adding to address array
     while (i < this.base.length) //filling up with zeros to complete the length of IPv4/v6 address
       this.base[i++] = 0;
 
     setPrefix(this.base,this.maskLength);
   }
-	
+
 
   public Prefix toPrefix()
   {
     return (Prefix)this;
   }
-  
+
   public int getOffset() //returning the record offset
   {
     return this.bytes+1;
   }
-  
+
   private int bytes;
 }

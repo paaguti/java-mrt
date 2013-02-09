@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.util.LinkedList;
@@ -7,13 +13,13 @@ import org.javamrt.utils.RecordAccess;
 
 
 /**
- * 
+ *
  * ASPath is a linked list of elements which are either <br>
  * AS, ASSet or ASConfedSet
  * <br><br>
  * version 3.00: complete rewrite with ASPathSegment<br>
- * 
- * @version 3.00 
+ *
+ * @version 3.00
  * @author paag
  */
 public class ASPath implements Attribute {
@@ -32,7 +38,7 @@ public class ASPath implements Attribute {
 		decode(buffer, asSize);
 	}
 
-	
+
 	private void decode(byte[] buffer, int asSize) throws Exception {
 		this.path = new LinkedList<AS>();
 		int offset = 0;
@@ -41,7 +47,7 @@ public class ASPath implements Attribute {
 			ASPathSegment segment = new ASPathSegment(buffer, offset, asSize);
 			// System.err.printf("  segment @%-2d [t %2d]: %s\n",offset,segment.bType(),segment.toString());
 			switch (segment.bType()) {
-			case MRTConstants.asSequence: 
+			case MRTConstants.asSequence:
 				this.path.addAll(segment.getASList());
 				break;
 			case MRTConstants.asSet:
@@ -91,7 +97,7 @@ public class ASPath implements Attribute {
 	public void append(AS as) {
 		add(as);
 	}
-	
+
 	/**
 	 * alias of append(AS as)
 	 * @param as
@@ -105,13 +111,13 @@ public class ASPath implements Attribute {
 		return this.path;
 	}
 	/**
-	 * 
+	 *
 	 * @return the number of hops of the ASPATH
 	 */
 	public int length() {
 		return path.size();
 	}
-	
+
 	/**
 	 * @author paag
 	 * @return a Vector with the AS's which are doing prepending.
@@ -119,15 +125,15 @@ public class ASPath implements Attribute {
 	public Vector<AS> getPrependers() {
 		return prependers;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasAsPathPrepend() {
 		return prependers != null;
 	}
-	
+
 	/**
 	 * @author paag
 	 * rebuild the PREPENDER list
@@ -135,7 +141,7 @@ public class ASPath implements Attribute {
 	 */
 	public void mkPrependers() {
 		int asPathLen;
-		
+
 		this.prependers = null;
 		if ((asPathLen = this.path.size()) == 0)
 			return;
@@ -174,7 +180,7 @@ public class ASPath implements Attribute {
 		}
 		prependers.add(ultimo);
 	}
-	
+
 	/**
 	 * @param as: an AS
 	 * @return the index of the first occurrence of AS in the ASPATH
@@ -202,7 +208,7 @@ public class ASPath implements Attribute {
 		try {
 			if (this.path.size() == 0)
 				return "";
-			
+
 			String result = null;
 			for (int i = 0; i < this.path.size(); i++)
 				try {
@@ -247,18 +253,18 @@ public class ASPath implements Attribute {
 			return this.equals((ASPath)o);
 		return false;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param as: as Autonomous System
 	 * @return true if as generated the prefix
 	 */
 	public boolean isGenerator(AS as) {
 		return as.equals(this.path.getLast());
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return the As which generated the prefix
 	 */
 	public AS generator() {
@@ -273,7 +279,7 @@ public class ASPath implements Attribute {
 	 * @param none
 	 * @author paag
 	 */
-	
+
 	public ASPath canonicalPath() {
 		ASPath canonical = new ASPath();
 
@@ -288,7 +294,7 @@ public class ASPath implements Attribute {
 	private Vector<AS> prependers;
 
 	/**
-	 * 
+	 *
 	 * @return true if the originating AS is prepending
 	 */
 	public boolean hasOriginPrepend() {
@@ -302,11 +308,11 @@ public class ASPath implements Attribute {
 	public int compareTo(ASPath aspath) {
 		int result = 0;
 		if (this.equals(aspath)) return 0;
-		if (this.length() != aspath.length()) 
+		if (this.length() != aspath.length())
 			return this.length() > aspath.length() ? 1 : -1;
 		for (int i=0; i < this.length(); i++) {
 			result = this.get(i).compareTo(aspath.get(i));
-			if (result == 0) 
+			if (result == 0)
 				return result;
 		}
 		return result;

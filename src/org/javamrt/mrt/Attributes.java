@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
@@ -186,7 +192,7 @@ public class Attributes {
 
 			/*
 			 * TODO: Handle 4 byte AS stuff correctly
-			 * 
+			 *
 			 * Observed in rrc01: around April 2007 sometimes AS4PATH is set to
 			 * 0
 			 */
@@ -194,7 +200,7 @@ public class Attributes {
 				if (buffer.length == 0) {
 					hasAS4PathBug = true;
 				} else {
-					/** 
+					/**
 					 * throws RFC4893Exception, AttributeException
 					 */
 				    //					As4Path.replaceAS23456(buffer, (ASPath) getAttribute(MRTConstants.ATTRIBUTE_AS_PATH));
@@ -205,7 +211,7 @@ public class Attributes {
 			case MRTConstants.AS4_AGGREGATOR:
 				/*
 				 * Override 2byte AS Aggregator
-				 * 
+				 *
 				 * TODO: sanity check: make sure 2 byte aggregator was 23456
 				 */
 				Attribute as4Aggregator = new Aggregator(buffer, 4);

@@ -1,4 +1,10 @@
-package org.javamrt.mrt; 
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
+package org.javamrt.mrt;
 import java.util.Vector;
 
 import org.javamrt.utils.RecordAccess;
@@ -23,12 +29,12 @@ public class MpUnReach
       {
 	Nlri base = new Nlri (buffer, offset, afi);
 	offset += base.getOffset ();
-	
+
 	nlriVector.addElement (base);
 	nlri.append (base.toString () + " ");
       }
   }
-  
+
   public Vector < Nlri > getNlri ()
   {
     return nlriVector;
@@ -38,7 +44,7 @@ public class MpUnReach
   {
     return nlri.toString ();
   }
-  
+
   private Vector < Nlri > nlriVector = new Vector < Nlri > ();
   private StringBuffer nlri;
 }

@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.util.Comparator;
@@ -12,7 +18,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	public static final AS NullAS = new AS(0);
 	// protected long ASnumber;
 	protected byte ASCode[] = {0,0,0,0};
-	
+
 	protected AS() {
 	}
 
@@ -32,19 +38,19 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 
 	private void setASCode(byte[] newval) throws Exception {
 		if (newval.length == 2) {
-			this.ASCode[0] = 
+			this.ASCode[0] =
 			this.ASCode[1] = 0;
 			this.ASCode[2] = newval[0];
-			this.ASCode[3] = newval[1];			
+			this.ASCode[3] = newval[1];
 		} else if (newval.length == 4) {
 			this.ASCode[0] = newval[0];
 			this.ASCode[1] = newval[1];
 			this.ASCode[2] = newval[2];
-			this.ASCode[3] = newval[3];			
-		} else 
+			this.ASCode[3] = newval[3];
+		} else
 			throw new Exception(String.format("AS must be 2 or 4 bytes long (%d not allowed)",newval.length));
 	}
-	
+
 	public long getASN() {
 		long result = 0;
 		for (int i=0; i<ASCode.length;i++) {
@@ -53,7 +59,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 		}
 		return result;
 	}
-	
+
 	public void setASN(long ASnumber) {
 		this.setASCode(ASnumber & 0xffffffff);
 	}
@@ -62,7 +68,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 //		return this.ASnumber;
 //	}
 
-	
+
 	public int compareTo(org.javamrt.mrt.AS other) {
 		return compare(this, other);
 	}
@@ -75,10 +81,10 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * @param AS other
-	 * @return true if the other AS 
+	 * @return true if the other AS
 	 */
 	private boolean equals(AS other) {
 		for (int i=0; i<4; i++)
@@ -88,7 +94,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param other textual representation of AS
 	 * @return true if the textual representation of this equals the other
 	 */
@@ -140,7 +146,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	private int hiWord() {
 		return ((this.ASCode[0] & 0xff) << 8) | (this.ASCode[1] & 0xff);
 	}
-	
+
 	private int loWord() {
 		return ((this.ASCode[2] & 0xff) << 8) | (this.ASCode[3] & 0xff);
 	}
@@ -153,7 +159,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	}
 
 	public static AS parseString(String asspec) throws Exception {
-	
+
 		AS result = null;
 		if (asspec.matches("^(AS){0,1}[1-9][0-9]*(\\.[0-9]+){0,1}$")) {
 			asspec = asspec.replaceFirst("AS", "");
@@ -161,7 +167,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 				long asnum = Long.parseLong(asspec.replaceFirst("\\.[0-9]+$",""));
 				long asnum1 = Long.parseLong(asspec.replaceFirst("[0-9]+\\.", ""));
 
-				if ((asnum < 0) || (asnum > 65535) || 
+				if ((asnum < 0) || (asnum > 65535) ||
 					(asnum1 < 0) || (asnum1 > 65535))
 					throw new Exception ("numbers must be in [0,65535]");
 				asnum = asnum * 0x10000L + asnum1;

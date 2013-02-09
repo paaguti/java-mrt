@@ -1,4 +1,10 @@
-package org.javamrt.mrt; 
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
+package org.javamrt.mrt;
 
 import org.javamrt.utils.RecordAccess;
 
@@ -32,18 +38,18 @@ public class Refresh
 
   private int AFI;
   private int SAFI;
-  
+
   public Refresh (byte[]header, byte[]record)
   {
     super (header);
     this.AFI  = RecordAccess.getU16(record,0);
     this.SAFI = RecordAccess.getU8 (record,2);
   }
-  
+
   public String toString ()
   {
     return String.format("BGP4MP|%d|REFRESH|%d|%d",
-			 this.time, 
+			 this.time,
 			 this.AFI,
 			 this.SAFI);
   }

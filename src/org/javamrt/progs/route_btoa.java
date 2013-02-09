@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.progs;
 
 import java.io.PrintStream;
@@ -76,7 +82,7 @@ public class route_btoa {
 				case 'v':
 					printRFC4893violations  = true;
 					break;
-				
+
 				case 'o':
 					originator = AS.parseString(prueba.optarg);
 					break;
@@ -108,7 +114,7 @@ public class route_btoa {
 				in = new BGPFileReader(args[arg]);
 				while (false == in.eof()) {
 				try {
-					if ((record = in.readNext()) == null) 
+					if ((record = in.readNext()) == null)
 						break;
 						if (record instanceof Open
 								|| record instanceof KeepAlive
@@ -192,7 +198,7 @@ public class route_btoa {
 			return true;
 		return peer.equals(mrt.getPeer());
 	}
-	
+
 	private static boolean checkASPath(MRTRecord mrt) {
 		if (originator == null) {
 			if (traverses == null)

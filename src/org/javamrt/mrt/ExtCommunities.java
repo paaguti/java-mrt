@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
@@ -9,7 +15,7 @@ public class ExtCommunities implements Attribute {
 	public ExtCommunities(byte[] buffer) throws Exception {
 		/*
 		 * TODO: why am I not using this
-		 * 
+		 *
 		 * int subType = RecordAccess.getU8 (buffer, 1);
 		 * if (subType == 0x02) { extComDet =
 		 * "\nEXTENDED ROUTE TARGET COMMUNITY: ";

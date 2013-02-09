@@ -1,4 +1,10 @@
-package org.javamrt.mrt; 
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
+package org.javamrt.mrt;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -8,9 +14,9 @@ import org.javamrt.utils.RecordAccess;
 
 
 public class TableDump
-  extends MRTRecord  
+  extends MRTRecord
 {
-  
+
 protected TableDump(int           view,
 	    int           sequence,
 	    Prefix        prefix,
@@ -34,7 +40,7 @@ protected TableDump(int           view,
 		      peer,
 		      peerAs,
 		      attributes);
-    
+
     this.view       = view;
     this.sequence   = sequence;
     this.prefix     = prefix;
@@ -46,20 +52,20 @@ protected TableDump(int           view,
 
     setAsPath();
   }
-  
+
   TableDump (byte[]cabecera, byte[]record,int subtype)
     throws Exception
   {
     super(cabecera);
-    
+
     int decodeOffset = 0;
     int addrSize     = (subtype == MRTConstants.AFI_IPv4) ? 4 : 16;
-    
+
     view = RecordAccess.getU16 (record, decodeOffset);
     decodeOffset += 2;
     sequence = RecordAccess.getU16 (record, decodeOffset);
     decodeOffset += 2;
-    
+
     byte[] base = RecordAccess.getBytes (record, decodeOffset, addrSize);
     decodeOffset += addrSize;
     this.prefix =
@@ -85,7 +91,7 @@ protected TableDump(int           view,
   private void setAsPath()
   {
     try {
-    	asPath = 
+    	asPath =
     		(ASPath)attributes.getAttribute(MRTConstants.ATTRIBUTE_AS_PATH);
      } catch (Exception e) {
     	 asPath = null;
@@ -96,7 +102,7 @@ protected TableDump(int           view,
   {
     return this.Peer;
   }
-  
+
   public AS getPeerAS ()
   {
     return this.PeerAS;
@@ -110,7 +116,7 @@ protected TableDump(int           view,
     return new Date (this.origTime * 1000L);
   }
 
-  public long getTime() 
+  public long getTime()
   {
 	  return this.origTime;
   }
@@ -135,7 +141,7 @@ protected TableDump(int           view,
   {
     return this.prefix.matches (addr);
   }
-  
+
   public boolean hasAsPathPrepend ()
   {
     if (this.asPath == null)
@@ -162,7 +168,7 @@ protected TableDump(int           view,
   public TableDump toTableDump() {
 	  return this;
   }
-  
+
   protected Prefix      prefix;
   protected InetAddress Peer      = null;
   protected AS          PeerAS    = null;
@@ -172,7 +178,7 @@ protected TableDump(int           view,
 
   protected Attributes attributes;
   protected ASPath asPath;
-  
+
   protected int view;
   protected int sequence;
 

@@ -1,10 +1,16 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 
 public class MRTConstants {
-	
+
 	/**
 	 *  for the ASPATH
 	 */
@@ -24,7 +30,7 @@ public class MRTConstants {
 	    }
 	}
 	/*
-	 * TODO : 
+	 * TODO :
 	 */
 	public static final byte BGP_ATTR_FLAG_OPTIONAL = (byte)0x80;
 	public static final byte BGP_ATTR_FLAG_TRANS    = (byte)0x40;
@@ -131,7 +137,7 @@ public class MRTConstants {
 		if (0 != (attr & BGP_ATTR_FLAG_EXTLEN ))  result = result + "EXT_LEN ";
 		return result.replaceAll(" $", "");
 	}
-	
+
 
 	private static final String[] bgpTypes = {
 		"BGP4MSG_UNKNOWN",
@@ -141,7 +147,7 @@ public class MRTConstants {
 		"BGP4MSG_KEEPALIVE",
 		"BGP4MSG_REFRESH"
 	};
-	
+
 	public static final String bgpType(int bgpType) {
 		try {
 			return bgpTypes[bgpType];
@@ -149,23 +155,23 @@ public class MRTConstants {
 		}
 		return bgpTypes[0];
 	}
-	
-	protected static final SimpleDateFormat mrtFormat = 
+
+	protected static final SimpleDateFormat mrtFormat =
 		new SimpleDateFormat("MM/dd/yy HH:mm:ss");
-	
+
 	/**
-	 * 
+	 *
 	 * @param InetAddress ia
 	 * @return Textual representation of the InetAddress
-	 * 
+	 *
 	 * for all addresses, removes initial name
 	 */
-	protected static final String ipAddressString(InetAddress ia) 
+	protected static final String ipAddressString(InetAddress ia)
 	{
 		return ia.getHostAddress().
 			// replaceFirst("^[^/]*/", "").
 			replaceFirst(":0(:0)+","::").
 			replaceFirst("^0:","").
-			replaceFirst(":::", "::");	
+			replaceFirst(":::", "::");
 	}
 }

@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
@@ -8,7 +14,7 @@ import org.javamrt.utils.RecordAccess;
 
 public class MpReach implements Attribute {
 	/*
-	 * Implement RFC2283 MP_REACH_NLRI 
+	 * Implement RFC2283 MP_REACH_NLRI
 	 * ignoring subnetwork points of attachment
 	 */
 	private int afi;
@@ -24,9 +30,9 @@ public class MpReach implements Attribute {
 		nlriVector = new Vector<Nlri>();
 
 		/**
-		 * +---------------------------------------------------------+ 
+		 * +---------------------------------------------------------+
 		 * | Address  Family Identifier (2 octets)                   |
-		 * +---------------------------------------------------------+ 
+		 * +---------------------------------------------------------+
 		 * | Subsequent Address Family Identifier (1 octet)          |
 		 * +---------------------------------------------------------+
 		 * | Length of Next Hop Network Address (1 octet)            |
@@ -44,7 +50,7 @@ public class MpReach implements Attribute {
 		}
 
 		// TODO: investigate why sometimes afi > AFI_MAX
-		
+
 		if (afi > MRTConstants.AFI_MAX)
 			return;
 		if (nextHopLen == 0)
@@ -53,11 +59,11 @@ public class MpReach implements Attribute {
 		int offset = 4;
 		/*
 		 * RFC 2545 BGP-4 Multiprotocol Extensions for IPv6 IDR
-		 * 
+		 *
 		 * A BGP speaker shall advertise to its peer in the Network Address of
 		 * Next Hop field the global IPv6 address of the next hop, potentially
 		 * followed by the link-local IPv6 address of the next hop.
-		 * 
+		 *
 		 * The value of the Length of Next Hop Network Address field on a
 		 * MP_REACH_NLRI attribute shall be set to 16, when only a global
 		 * address is present, or 32 if a link-local address is also included in
@@ -69,16 +75,16 @@ public class MpReach implements Attribute {
 			if (nhl == 32)
 				nhl = 16;
 		}
-		
+
 		byte[] abuf = RecordAccess.getBytes(buffer,offset, nhl);
 		nextHop = InetAddress.getByAddress(abuf);
 		offset += nextHopLen;
 
 		/**
-		 * 
-		 * +-------------------------------+ 
+		 *
+		 * +-------------------------------+
 		 * | Number of SNPAs (1 octet)     |
-		 * +-------------------------------+ 
+		 * +-------------------------------+
 		 * | Length of first SNPA(1 octet) |
 		 * +-------------------------------+
 		 * | First SNPA (variable)         |
@@ -94,7 +100,7 @@ public class MpReach implements Attribute {
 
 		int snpaNo = RecordAccess.getU8(buffer, offset);
 
-		if (Debug.compileDebug) 
+		if (Debug.compileDebug)
 			Debug.println(" NEXT_HOP: " + nextHop.getHostAddress()
 					+ "\n SNPA_NO: " + snpaNo);
 
@@ -105,7 +111,7 @@ public class MpReach implements Attribute {
 			offset++;
 			/*
 			 * Ignore the SNPA's for the moment being:
-			 * 
+			 *
 			 * byte[]snpa = RecordAccess.getBytes (this.buffer, offset,
 			 * snpaLen); InetAddress subnetPA = InetAddress.getByAddress (snpa);
 			 * snpavector.addElement(subnetPA);
@@ -114,7 +120,7 @@ public class MpReach implements Attribute {
 		}
 
 		/*
-		 * +---------------------------------------------------+ 
+		 * +---------------------------------------------------+
 		 * | Network Layer Reachability Information (variable) |
 		 * +---------------------------------------------------+
 		 */

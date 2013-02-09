@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.utils;
 
 // import java.awt.GraphicsEnvironment;
@@ -19,7 +25,7 @@ public class Common {
 	/**
 	 * Calculate the timestamp for the beginning of month before <i>time</i> <br>
 	 * if <i>time</i> is the beginning of month, return it.
-	 * 
+	 *
 	 * @param time
 	 * @return timestamp of beginning of the month before <i>time</i>
 	 */
@@ -36,7 +42,7 @@ public class Common {
 	/**
 	 * Calculate the timestamp of the midnight before <i>time</i> <br>
 	 * If <i>time</i> is the midnight, return it.
-	 * 
+	 *
 	 * @param time
 	 * @return timestamp of the midnight before <i>time</i>
 	 */
@@ -51,7 +57,7 @@ public class Common {
 
 	/**
 	 * Calculate the timestamp for the beginning of hour
-	 * 
+	 *
 	 * @param time
 	 * @return
 	 */
@@ -64,7 +70,7 @@ public class Common {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param time
 	 * @return the seconds since the start of hour; <br>
 	 *         for hh:00:00, return 0
@@ -74,7 +80,7 @@ public class Common {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param time
 	 * @return the seconds since midnight of the day;<br>
 	 *         if time is midnight, return 0
@@ -84,7 +90,7 @@ public class Common {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param time
 	 * @return the seconds since midnight of the day;<br>
 	 *         if time is midnight, return 0
@@ -133,23 +139,23 @@ public class Common {
 			month = Calendar.AUGUST;
 			date  = 17;
 		}
-		cal.set(Calendar.DATE,  date);		
+		cal.set(Calendar.DATE,  date);
 		cal.set(Calendar.MONTH, month);
 		cal.set(Calendar.YEAR,  year);
 		cal.set(Calendar.HOUR_OF_DAY,0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND,0);
 		cal.set(Calendar.MILLISECOND,0);
-		
+
 		printCal(cal,"UTC");
 		System.out.printf(" son %d segundos de la epoca\n",cal.getTimeInMillis()/1000L);
 	}
-	
+
 	private static void printCal(Calendar cal2, String zone) {
 		System.out.printf("%s: %2d/%02d/%04d %2d:%02d:%02d", zone, cal2
 				.get(Calendar.DAY_OF_MONTH), cal2.get(Calendar.MONTH)+1, cal2
 				.get(Calendar.YEAR), cal2.get(Calendar.HOUR_OF_DAY), cal2
-				.get(Calendar.MINUTE), cal2.get(Calendar.SECOND));	
+				.get(Calendar.MINUTE), cal2.get(Calendar.SECOND));
 	}
 
 }

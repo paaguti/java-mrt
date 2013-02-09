@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
@@ -59,7 +65,7 @@ public class MRTRecord {
 	public InetAddress getPeer() {
 		return null;
 	}
-	
+
 	public ASPath getASPath() {
 		return null;
 	}
@@ -68,17 +74,17 @@ public class MRTRecord {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	// Override in subclasses
 	public TableDump toTableDump() {
 		return null;
 	}
-	
+
 	// Override in subclasses
 	public Advertisement toAdvertisement() {
 		return null;
 	}
-	
+
 	// Override in subclasses
 	public Withdraw toWithdraw() {
 		return null;

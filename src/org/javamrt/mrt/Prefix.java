@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
@@ -7,7 +13,7 @@ import java.util.Comparator;
 // matches IPv4 and IPv6 prefixes
 
 public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
-	
+
 	private final static int Inet4AddrLen = 4;
 	private final static int Inet6AddrLen = 16;
 
@@ -53,10 +59,10 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 		 */
 		if (addr.length != Inet4AddrLen && addr.length != Inet6AddrLen)
 			throw new PrefixMaskException(addr, maskLen);
-		
-		if (addr.length * 8 < maskLen) 
+
+		if (addr.length * 8 < maskLen)
 			throw new PrefixMaskException(addr, maskLen);
-		
+
 		this.base      = new byte[addr.length];
 		this.mask      = new byte[addr.length];
 		this.broadcast = new byte[addr.length];
@@ -65,7 +71,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 
 		/*
 		 * bug in version 1.00
-		 * 
+		 *
 		if (this.base.length * 8 < this.maskLength) {
 			throw new PrefixMaskException(this.base, this.maskLength);
 		}
@@ -121,11 +127,11 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 		temp[i] = base[i];
 	    setPrefix(temp,maskLength);
 	}
-	
+
 	public boolean matches(InetAddress addr) {
 		return matches(addr.getAddress());
 	}
-	
+
 	protected boolean matches(byte[] addr) {
 		if (addr.length == this.base.length) {
 			for (int i = 0; i < this.base.length; i++) {
@@ -196,9 +202,9 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 			return this.equals(((Prefix) o));
 		return false;
 	}
-	
+
 	public boolean isDefault() {
-		if (this.maskLength != 0) 
+		if (this.maskLength != 0)
 			return false;
 		for (int i=0; i < base.length; i++)
 			if (base[i] != 0)

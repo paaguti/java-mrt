@@ -1,4 +1,10 @@
-package org.javamrt.mrt; 
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
+package org.javamrt.mrt;
 
 import org.javamrt.utils.RecordAccess;
 
@@ -9,24 +15,24 @@ public class Med
   {
     this.med = med;
   }
-  
+
   public Med (byte[] buffer)
   {
     med = RecordAccess.getU32 (buffer, 0);
   }
-  
+
   public String toString ()
   {
     return ""+med;
   }
-  
+
   public long getMed ()
   {
     return med;
   }
-  
+
   protected long med;
-  
+
 	public boolean equals(Object o) {
 		if (o == null)
 			return false;

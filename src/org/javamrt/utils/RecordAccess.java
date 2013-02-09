@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.utils;
 
 public class RecordAccess
@@ -49,20 +55,20 @@ public class RecordAccess
       result[i] = buffer[offset + i];
     return result;
   }
-  
+
   static public String arrayToString(byte[] buffer)
   {
     return arrayToString(buffer,0,buffer.length);
   }
-  
-  static public String arrayToString(byte[] buffer,int offset,int len) 
+
+  static public String arrayToString(byte[] buffer,int offset,int len)
   {
     StringBuffer result = new StringBuffer();
-    
+
 
     for (int i=offset - (offset % 8);i < offset+len;i++)
       {
-	if (i % 8 == 0) 
+	if (i % 8 == 0)
 	  result.append(String.format("\n%4d\t",i));
 	if (i >= offset)
 	  result.append(String.format("%02X ",buffer[i]));
@@ -70,37 +76,37 @@ public class RecordAccess
 	  result.append("   ");
       }
     result.append("\n");
-    
+
     return result.toString();
   }
-  
-  static public void dump(java.io.PrintStream out,byte[] buffer,int offset,int len) 
+
+  static public void dump(java.io.PrintStream out,byte[] buffer,int offset,int len)
   {
     out.print(arrayToString(buffer,offset,len));
   }
 
-  static public void dump(byte[] buffer,int offset,int len) 
+  static public void dump(byte[] buffer,int offset,int len)
   {
     dump(System.out,buffer,offset,len);
   }
 
-  static public void dump(java.io.PrintStream out,byte[] buffer,int len) 
+  static public void dump(java.io.PrintStream out,byte[] buffer,int len)
   {
     out.print(arrayToString(buffer,0,len));
   }
 
-  static public void dump(byte[] buffer,int len) 
+  static public void dump(byte[] buffer,int len)
   {
     dump(System.out,buffer,len);
   }
 
-  static public void dump(java.io.PrintStream out,byte[] buffer) 
+  static public void dump(java.io.PrintStream out,byte[] buffer)
   {
     out.printf("buffer is %d bytes long",buffer.length);
     out.print(arrayToString(buffer,0,buffer.length));
   }
 
-  static public void dump(byte[] buffer) 
+  static public void dump(byte[] buffer)
   {
     dump(System.out,buffer,buffer.length);
   }

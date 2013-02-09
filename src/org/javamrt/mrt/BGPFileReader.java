@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.io.BufferedInputStream;
@@ -19,15 +25,15 @@ public class BGPFileReader {
 	private LinkedList<MRTRecord> recordFifo;
 
 	private boolean eof = false;
-	
+
 	private byte[] header;
 	private byte[] record;
 
 	private String toString;
 	/*****
-	 * 
+	 *
 	 * public BGPFileReader (BufferedInputStream in)
-	 * 
+	 *
 	 * create a new BGPFileReader from BufferedInputStream <in>
 	 */
 
@@ -41,18 +47,18 @@ public class BGPFileReader {
 	}
 
 	/*****
-	 * 
+	 *
 	 * public BGPFileReader (String name)
-	 * 
+	 *
 	 * create a new BGPFileReader from BufferedInputStream specified by the
 	 * String name
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	public BGPFileReader(String name) throws Exception  {		
+	public BGPFileReader(String name) throws Exception  {
 		InputStream inStream = null;
 		this.toString = name;
-		
+
 		try { // to open the name as a URL
 			java.net.URL url = new java.net.URL(name);
 			inStream = url.openStream();
@@ -94,7 +100,7 @@ public class BGPFileReader {
 
 	/***
 	 * void close()
-	 * 
+	 *
 	 * close the BGPFileReader
 	 */
 	public void close() throws java.io.IOException {
@@ -112,11 +118,11 @@ public class BGPFileReader {
 		return this.toString;
 	}
 	/***
-	 * 
+	 *
 	 * MRTRecord readNext()
-	 * 
+	 *
 	 * returns next record on successful completion null on EOF
-	 * 
+	 *
 	 * throws Exception when something goes wrong
 	 */
 
@@ -126,7 +132,7 @@ public class BGPFileReader {
 	private long time = 0;
 
 	private long recordCounter = 0;
-	
+
 	/**
 	 * @return the number of MRT binary format records read.<br>
 	 * In the new MRT record formats, that has little or nothing<br>
@@ -137,7 +143,7 @@ public class BGPFileReader {
 	public long mrtRecords() {
 		return recordCounter;
 	}
-	
+
 	/**
 	 * The name MRT record is not perfect, because actually it's routing events we get
 	 * @return a BGP event or a BGP control message.
@@ -148,7 +154,7 @@ public class BGPFileReader {
 		while (true) {
 			/*
 			 * Consume any records waiting in the queue
-			 * 
+			 *
 			 * using recordFifo.add(MRTRecord) <=> recordFifo.remove()
 			 */
 			if (recordFifo.size() != 0)
@@ -208,7 +214,7 @@ public class BGPFileReader {
 			case MRTConstants.TABLE_DUMP:
 				return parseTableDump(subtype);
 
-			case MRTConstants.TABLE_DUMP_v2: 
+			case MRTConstants.TABLE_DUMP_v2:
 
 				switch (subtype) {
 				case MRTConstants.PEER_INDEX_TABLE:
@@ -269,8 +275,8 @@ public class BGPFileReader {
 			/*
 			 * TODO
 			 * TTOODDOO::::
-			 * 
-			 * 
+			 *
+			 *
 			 * case BGP4MP_SNAPSHOT: return new Bgp4mpSnapshot(header,record);
 			 */
 
@@ -312,7 +318,7 @@ public class BGPFileReader {
 		case MRTConstants.BGP4MP_STATE_CHANGE_AS4: {
 			/*
 			 * draft-ietf-grow-mrt-07.txt
-			 * 
+			 *
 			 * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
 			 * 9 0 1
 			 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -406,10 +412,10 @@ public class BGPFileReader {
 			 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 			 * | Peer AS (variable) |
 			 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-			 * 
+			 *
 			 * The Peer Type field is a bit field which encodes the type of the
 			 * AS and IP address as follows:
-			 * 
+			 *
 			 * Bit 0 - unset for IPv4 Peer IP address, set for IPv6 Bit 1 -
 			 * unset when Peer AS field is 16 bits, set when it's 32 bits
 			 */
@@ -444,14 +450,14 @@ public class BGPFileReader {
 	private java.net.InetAddress peerIP[] = null;
 
 	private void parseTableDumpv2(int NLRItype) throws Exception {
-		
+
 		if (Debug.compileDebug) {
 			Debug.printf("parseTableDumpv2(%d)\nheader:", NLRItype);
 			Debug.dump(header);
 			Debug.println("record:");
 			Debug.dump(record);
 		}
-		
+
 		int offset = 0;
 		long sequenceNo = RecordAccess.getU32(this.record, offset);
 		offset = 4;
@@ -470,7 +476,7 @@ public class BGPFileReader {
 
 		for (int i = 0; i < entryCount; i++) {
 			int peerIndex = RecordAccess.getU16(this.record, offset);
-			
+
 			if (debug) {
 				System.out.printf("peerIndex = %d; peer = %s(%s)\n",
 						peerIndex,MRTConstants.ipAddressString(peerIP[peerIndex]),peerAS[peerIndex].toString("AS"));
@@ -485,7 +491,7 @@ public class BGPFileReader {
 			offset += 2;
 			Attributes attributes = new Attributes(record, attrLen, offset,4);
 			offset += attrLen;
-			
+
 
 			recordFifo.add(new TableDumpv2(1, // int view,
 					(int) (sequenceNo & 0xffff), nlri, time, peerIP[peerIndex], // InetAddress
@@ -518,7 +524,7 @@ public class BGPFileReader {
 		 * skip the following 16 bytes which are the signature of the BGP header
 		 */
 		offset += 16;
-		
+
 		int bgpSize = RecordAccess.getU16(record, offset); offset += 2;
 		int bgpType = RecordAccess.getU8(record, offset); offset ++;
 
@@ -534,7 +540,7 @@ public class BGPFileReader {
 			Debug.printf("bgpSize      = %d\n", bgpSize);
 			Debug.println("bgpType      = " + MRTConstants.bgpType(bgpType));
 			Debug.dump(record);
-		}		
+		}
 		switch (bgpType) {
 		case MRTConstants.BGP4MSG_KEEPALIVE:
 			return new KeepAlive(header, record);
@@ -623,7 +629,7 @@ public class BGPFileReader {
 			 * System.out.println("These are the attributes");
 			 * RecordAccess.dump(record,offset,attrLen);
 			 * System.out.println("int attrLen = "+attrLen);
-			 * 
+			 *
 			 * throw new Exception("MP_REACH attribute!");
 			 */
 
@@ -639,7 +645,7 @@ public class BGPFileReader {
 			}
 		}
 		if (recordFifo.isEmpty()) {
-			if (Debug.compileDebug) 
+			if (Debug.compileDebug)
 				if (Debug.doDebug)
 					throw new BGPFileReaderException("recordFifo empty!", record);
 			return null;

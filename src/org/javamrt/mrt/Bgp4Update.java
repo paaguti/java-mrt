@@ -1,10 +1,16 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.mrt;
 
 import java.net.InetAddress;
 import java.util.Comparator;
 
-public class Bgp4Update 
-	extends MRTRecord 
+public class Bgp4Update
+	extends MRTRecord
 	implements Comparable<Bgp4Update>, Comparator<Bgp4Update>
 {
 	protected char updateType = '?';
@@ -50,10 +56,10 @@ public class Bgp4Update
 	 * public String shortString () { String result = this.time+"|"+ // this
 	 * comes from MRTRecord this.updateType+"|"+
 	 * this.peerIP.getHostAddress()+"|"+ this.prefix.toString();
-	 * 
+	 *
 	 * if (this.updateAttr != null) result += "|" +
 	 * this.updateAttr.getASPath().toString();
-	 * 
+	 *
 	 * return result; }
 	 */
 
@@ -106,9 +112,9 @@ public class Bgp4Update
 					result = -1;
 				else if (this.time > other.time)
 					result = 1;
-/*				
+/*
  *  Ignore sorting by update type
- *  
+ *
  * 				else {
 					if (this.updateType > other.updateType)
 						result = 1;
@@ -126,10 +132,10 @@ public class Bgp4Update
 	public int compare(Bgp4Update o1, Bgp4Update o2) {
 		return o1.compareTo(o2);
 	}
-	
+
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
-	 * 
+	 *
 	 * the implementation of equals:
 	 *  1) same update type
 	 *  2) at the same time
@@ -149,7 +155,7 @@ public class Bgp4Update
 			}
 		return false;
 	}
-	
+
 	public boolean equals(Object o) {
 		if (null == o)
 			return false;
@@ -160,11 +166,11 @@ public class Bgp4Update
 		}
 		return false;
 	}
-	
+
 	/**
 	 * overrides {@link MRTRecord#toAdvertisement()}
 	 * return this if it is an advertisement or null otherwise
-	 * 
+	 *
 	 * @see org.javamrt.mrt.MRTRecord#toAdvertisement()
 	 * @see org.javamrt.mrt.Advertisement#toAdvertisement()
 	 */
@@ -172,11 +178,11 @@ public class Bgp4Update
 	public Advertisement toAdvertisement() {
 		return null;
 	}
-	
+
 	/**
 	 * overrides {@link MRTRecord#toWithdraw()}
 	 * return this if it is an withdraw or null otherwise
-	 * 
+	 *
 	 * @see org.javamrt.mrt.MRTRecord#toWithdraw()
 	 * @see org.javamrt.mrt.Withdraw#toWithdraw()
 	 */

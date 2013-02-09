@@ -1,3 +1,9 @@
+// This file is part of java-mrt
+// A library to parse MRT files
+
+// This file is released under LGPL 3.0
+// http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+
 package org.javamrt.utils;
 
 import java.io.PrintStream;
@@ -20,14 +26,14 @@ public class getopts {
 	public String optarg = null;
 	public String opterr;
 	public String optopt = null;
-	
+
 	private String[] args;
 	private LongOpt[] options;
-	
+
 	/**
 	 * create a new class to process cmd line arguments<br><b>Sample code:</b><br>
 	 * <code>
-	 * 	getopt test = new getopts(args,<br> 
+	 * 	getopt test = new getopts(args,<br>
 &nbsp;&nbsp;new LongOpt('a',"arg",true);<br>
 &nbsp;&nbsp;new LongOpt('b',"beg",false);<br>
 &nbsp;&nbsp;new LongOpt('c',null,false));</code>
@@ -39,7 +45,7 @@ public class getopts {
 		this.options = options;
 		this.optind  = 0;
 	}
-	
+
 	/**
 	 * create a command-line parser for the 'old' short options
 	 * getopts options = new getopts(args,"abc:d:E");
@@ -47,21 +53,21 @@ public class getopts {
 	public getopts(String[] args, String optString) {
 		this.optind = 0;
 		this.args=args;
-		
+
 		char optChars[] = optString.toCharArray();
-		int optCount = optChars.length;		
+		int optCount = optChars.length;
 		for (int pos = 0;pos < optChars.length;pos++) {
 			if (optChars[pos] == ':') optCount--;
 		}
 		this.options = new LongOpt[optCount];
-		
+
 		optCount = 0;
 		for (int pos = 0;pos < optChars.length;pos++) {
 			if (pos != optChars.length-1 && optChars[pos+1] == ':') {
 				this.options[optCount++] = new LongOpt(optChars[pos],null,true);
 				pos++;
 			} else {
-				this.options[optCount++] = new LongOpt(optChars[pos],null,false);				
+				this.options[optCount++] = new LongOpt(optChars[pos],null,false);
 			}
 		}
 	}
@@ -72,12 +78,12 @@ public class getopts {
 	 * <b>'?'</b>  if option unknown... set opterr with unknown option<br>
 	 * <b>shortOpt</b>  if option found... set optarg to optional argument
 	 */
-	
+
 	// return 255 on error: missing argument
 	// return '?' : unknown flag
-	
-	// TODO return codes < '0' 
-	
+
+	// TODO return codes < '0'
+
 	private char nextShortOption(String currentArg) {
 		this.opterr = null;
 		for (int i=0;i<options.length;i++) {
@@ -127,23 +133,23 @@ public class getopts {
 		}
 		return result;
 	}
-	
+
 	public char nextOption() {
 		this.optarg = null;
 		this.opterr = null;
-		
+
 		if (this.optind == this.args.length)
 			return 0;
-		
+
 		String currentArg = this.args[this.optind];
-		
+
 		if (currentArg.matches("-[a-zA-Z0-9]"))
 			return nextShortOption(currentArg);
 		if (currentArg.matches("--[0-9A-Za-z].+"))
 			return nextLongOption(currentArg);
 		return 0;
 	}
-	
+
 /**
  * for convenience: try to parse optarg into an integer
  * @return
@@ -151,7 +157,7 @@ public class getopts {
 	public int optarg() {
 		return Integer.parseInt(this.optarg);
 	}
-	
+
 
 	/**
 	 * Demo code
@@ -162,12 +168,12 @@ public class getopts {
 		for (int i=0; i<args.length; i++)
 			System.out.print(args[i]+" ");
 		System.out.println();
-		getopts test = new getopts(args, 
+		getopts test = new getopts(args,
 				new LongOpt('a',"arg", true, "<arg>: con argumento <arg>"),
 				new LongOpt('b',"beg", false,"     : sin argumento"),
 				new LongOpt('c',null, false, "     : sin largo"));
 		char opcion;
-		
+
 		while ((opcion = test.nextOption()) > 0) {
 			switch (opcion){
 			case 'a':
@@ -182,7 +188,7 @@ public class getopts {
 			case 255:
 				System.out.println("Missing argument for "+test.opterr);
 				System.exit(1);
-			default: 
+			default:
 				System.err.println("Error processing "+args[test.optind]);
 				System.exit(1);
 			}
@@ -193,7 +199,7 @@ public class getopts {
 		System.out.println();
 		test.printHelp(System.out);
 	}
-	
+
 	public void printHelp(PrintStream out) {
 		int maxLong = 0;
 		for (LongOpt lopt:this.options)
