@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name = "Paquete análisis BGP-4" default = "rebuild">
+  <property name = "outputdir"  value = "."/>
+  <property name = "classdir"   value = "./bin" />
+  <property name = "sourcedir"  value = "./src" />
+  <property name = "debug"      value = "false" />
+  <property name = "mrt.main.class" value = "org.java-mrt.progs.route_btoa" />
+
+  <target name = "cleansrc" description = "Borra los backups">
+    <tstamp/>
+    <delete verbose="true">
+       <fileset dir = "${sourcedir}"
+	        defaultexcludes="no"
+                includes = "**/*~"  />
+     </delete>
+  </target>
+
+  <target name = "clean"
+	  depends="cleansrc"
+	  description = "Borra las clases">
+    <tstamp/>
+    <delete dir = "${classdir}"/>
+  </target>
+
+  <target name = "distclean"
+	  depends = "clean"
+	  description = "Borra el jar y los directorios">
+    <tstamp/>
+    <!-- delete dir = "${outputdir}"/ -->
+    <delete verbose="true">
+	<fileset dir="${outputdir}">
+	    <include name="mrt.jar" />
+	</fileset>
+    </delete>
+  </target>
+
+  <target name = "jar"
+	  depends = "compile"
+	  description = "Create .jar for command line utils">
+
+    <mkdir dir="${outputdir}" />
+    <jar jarfile  = "${outputdir}/mrt.jar"
+	 basedir  ="${classdir}"
+	 update   = "yes">
+      <manifest>
+	<attribute name="Main-Class" value="${mrt.main.class}" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name = "compile"
+	  description = "Compile the org.mrt library">
+    <mkdir dir = "${classdir}"/>
+
+    <javac srcdir ="${sourcedir}/org/javamrt"
+	   includes="**/*.java"
+	   includeantruntime="false"
+	   destdir = "${classdir}"
+	   debug="${debug}">
+    </javac>
+  </target>
+
+  <target name = "rebuild" depends = "distclean,jar" />
+  <target name = "all" depends = "jar" />
+</project>
