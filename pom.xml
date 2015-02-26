@@ -17,7 +17,20 @@
         <connection>scm:git:git@github.com:APNIC-net/java-mrt.git</connection>
         <developerConnection>scm:git:git@github.com:APNIC-net/java-mrt.git</developerConnection>
     </scm>
-
+    
+    <distributionManagement>
+        <repository>
+            <id>nexus-staging</id>
+            <name>Nexus Staging Repository</name>
+            <url>http://nexus.apnic.net:8081/nexus/content/repositories/staging</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://nexus.apnic.net:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
