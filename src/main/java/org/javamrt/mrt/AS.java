@@ -139,7 +139,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	public String toString() {
 		if (this.equals(0))        return "AS_NULL";
 		if (this.equals(AS_TRANS)) return "AS_TRANS";
-		if (this.is4Byte())        return String.format("%d.%d",hiWord(),loWord());
+		if (this.is4Byte())        return String.format("%d",(hiWord()<<16) + loWord());
 		return String.format("%d", loWord());
 	}
 

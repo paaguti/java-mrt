@@ -37,7 +37,6 @@ public class ExtCommunities implements Attribute {
 		} else if (typeHigh == 0x01) {
 
 			byte[] value = RecordAccess.getBytes(buffer, offset, 4);
-			offset += 4;
 			ip = InetAddress.getByAddress(value).getHostAddress();
 			offset += 4;
 			number = (long) RecordAccess.getU16(buffer, offset);
