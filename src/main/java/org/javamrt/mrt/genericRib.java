@@ -30,7 +30,7 @@ public class genericRib extends MRTRecord
       nlri = new Nlri (this.record, offset, afi);
     } catch (UnknownHostException e)
     {
-      e.printStackTrace ();
+      route_btoa.printStackTrace(e);
     }
     offset += nlri.getOffset ();
     int entryCount = RecordAccess.getU16 (this.record, offset);
@@ -38,13 +38,13 @@ public class genericRib extends MRTRecord
        try {
        stream=new BufferedInputStream(new FileInputStream("temp.xxx"));
        } catch (FileNotFoundException e1) {
-       e1.printStackTrace();
+        route_btoa.printStackTrace(e1);
        }
        try {
        body=new byte [stream.available()];
        int read=stream.read(body, 0, stream.available());
        } catch (IOException e) {
-       e.printStackTrace();
+        route_btoa.printStackTrace(e);
        }
        IndexTable test=new IndexTable(body);
      * /

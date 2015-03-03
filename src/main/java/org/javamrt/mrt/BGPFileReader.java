@@ -6,6 +6,7 @@
 
 package org.javamrt.mrt;
 
+import org.javamrt.progs.route_btoa;
 import org.javamrt.utils.Debug;
 import org.javamrt.utils.RecordAccess;
 
@@ -261,7 +262,7 @@ public class BGPFileReader {
 	}
 
 	private MRTRecord parseBgp4mp(int subtype) throws Exception {
-		// System.out.println("parseBgp4mp("+MRTConstants.mpSubType(subtype)+")");
+		// route_btoa.System_err_println("parseBgp4mp("+MRTConstants.mpSubType(subtype)+")");
 		switch (subtype) {
 		case MRTConstants.BGP4MP_MESSAGE:
 		case MRTConstants.BGP4MP_MESSAGE_AS4:
@@ -358,11 +359,11 @@ public class BGPFileReader {
 
 	private void parsePeerIndexTable() throws Exception {
 		/*
-		 * System.out.println("in BGPFileReader.parsePeerIndexTable\nheader:");
-		 * RecordAccess.dump(header); System.out.println("record");
+		 * route_btoa.System_err_println("in BGPFileReader.parsePeerIndexTable\nheader:");
+		 * RecordAccess.dump(header); route_btoa.System_err_println("record");
 		 * RecordAccess.dump(record);
 		 */
-		// System.err.println("\nin parsePeerIndexTable()...");
+		// route_btoa.System_err_println("\nin parsePeerIndexTable()...");
 		/*
 		 * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
 		 * 1 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
@@ -387,9 +388,9 @@ public class BGPFileReader {
 		here += 2;
 
 		/*
-		 * System.out.printf("Collector BGP Id: 0x%08X\n",CollectorBGPId);
-		 * System.out.printf("View Name Length = %d\n",ViewNameLen);
-		 * System.out.printf(" has %d peers\n",PeerCount);
+		 * route_btoa.System_err_println(String.format("Collector BGP Id: 0x%08X",CollectorBGPId));
+		 * route_btoa.System_err_println(String.format("View Name Length = %d",ViewNameLen));
+		 * route_btoa.System_err_println(String.format(" has %d peers\n",PeerCount));
 		 */
 		bgpId = new long[PeerCount];
 		peerAS = new org.javamrt.mrt.AS[PeerCount];
@@ -435,7 +436,7 @@ public class BGPFileReader {
 				here += 4;
 			}
 
-			// System.out.println("Peer "+i+"("+bgpId[i]+"): "+peerIP[i].getHostAddress()+" "+peerAS[i]);
+			// route_btoa.System_err_println("Peer "+i+"("+bgpId[i]+"): "+peerIP[i].getHostAddress()+" "+peerAS[i]);
 		}
 
 		// route_btoa.exit(0);
@@ -464,18 +465,18 @@ public class BGPFileReader {
 		offset += 2;
 
 		if (debug) {
-			System.out.println("Sequence = " + sequenceNo);
-			System.out.println("NLRI     = " + nlri.toPrefix().toString()
-					+ " [" + nlri.getOffset() + "]");
-			System.out.println("entries  = " + entryCount);
+			route_btoa.System_err_println("Sequence = " + sequenceNo);
+			route_btoa.System_err_println("NLRI     = " + nlri.toPrefix().toString()
+                    + " [" + nlri.getOffset() + "]");
+			route_btoa.System_err_println("entries  = " + entryCount);
 		}
 
 		for (int i = 0; i < entryCount; i++) {
 			int peerIndex = RecordAccess.getU16(this.record, offset);
 
 			if (debug) {
-				System.out.printf("peerIndex = %d; peer = %s(%s)\n",
-						peerIndex,MRTConstants.ipAddressString(peerIP[peerIndex]),peerAS[peerIndex].toString("AS"));
+				route_btoa.System_err_println(String.format("peerIndex = %d; peer = %s(%s)\n",
+                        peerIndex, MRTConstants.ipAddressString(peerIP[peerIndex]), peerAS[peerIndex].toString("AS")));
 			}
 
 			offset += 2;
@@ -620,11 +621,11 @@ public class BGPFileReader {
 
 			/*
 			 * if (mpReach != null || mpUnreach != null)
-			 * System.out.println("This is the whole record");
+			 * route_btoa.System_err_println("This is the whole record");
 			 * RecordAccess.dump(record);
-			 * System.out.println("These are the attributes");
+			 * route_btoa.System_err_println("These are the attributes");
 			 * RecordAccess.dump(record,offset,attrLen);
-			 * System.out.println("int attrLen = "+attrLen);
+			 * route_btoa.System_err_println("int attrLen = "+attrLen);
 			 *
 			 * throw new Exception("MP_REACH attribute!");
 			 */

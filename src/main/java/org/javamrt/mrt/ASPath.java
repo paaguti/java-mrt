@@ -42,10 +42,10 @@ public class ASPath implements Attribute {
 	private void decode(byte[] buffer, int asSize) throws Exception {
 		this.path = new LinkedList<AS>();
 		int offset = 0;
-		// System.err.printf("New ASPATH (%d bytes)\n",buffer.length);
+		// route_btoa.System_err_println(String.format("New ASPATH (%d bytes)",buffer.length));
 		while (offset < buffer.length) {
 			ASPathSegment segment = new ASPathSegment(buffer, offset, asSize);
-			// System.err.printf("  segment @%-2d [t %2d]: %s\n",offset,segment.bType(),segment.toString());
+			// route_btoa.System_err_println(String.format("  segment @%-2d [t %2d]: %s\n",offset,segment.bType(),segment.toString()));
 			switch (segment.bType()) {
 			case MRTConstants.asSequence:
 				this.path.addAll(segment.getASList());
@@ -75,7 +75,7 @@ public class ASPath implements Attribute {
 		// and now try to see if we have AS PATH Prepend
 		//
 		mkPrependers();
-		// System.err.println("New ASPATH:"+path.toString());
+		// route_btoa.System_err_println("New ASPATH:"+path.toString());
 	}
 
 	public AS get(int i) {

@@ -10,9 +10,7 @@ import org.javamrt.mrt.*;
 import org.javamrt.utils.Debug;
 import org.javamrt.utils.getopts;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -26,8 +24,10 @@ public class route_btoa {
     public static boolean showIPv6 = true;
     public static boolean printRFC4893violations = false;
     public static String outputToFileExt = "";
+    public static boolean outputErrToBuilder = false;
+    public static StringBuilder errBuilder = new StringBuilder();
     public static boolean callSystemExit = true;
-
+    
 	public static void main(String args[]) {
 		BGPFileReader in;
 		MRTRecord record;
@@ -92,13 +92,13 @@ public class route_btoa {
 					break;
 				}
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				printStackTrace(e);
 				exit(1);
 			} catch (PrefixMaskException e) {
-				e.printStackTrace();
+                printStackTrace(e);
 				exit(1);
 			} catch (Exception e) {
-				e.printStackTrace();
+                printStackTrace(e);
 				exit(1);
 			}
 		}
@@ -147,17 +147,17 @@ public class route_btoa {
                                 if (!checkASPath(record))
                                     continue;
                             } catch (Exception e) {
-                                e.printStackTrace(System.err);
-                                System.err.printf("record = %s\n",record);
+                                printStackTrace(e);
+                                route_btoa.System_err_println(String.format("record = %s", record));
                             }
                             outputData(record.toString(), out);
                         }
                     } catch (RFC4893Exception rfce) {
                         if (printRFC4893violations)
-                            System.err.println(rfce.toString());
+                            route_btoa.System_err_println(rfce.toString());
                     } catch (Exception e) {
-                        System.err.println("Failed on record [" + cnt + "]");
-                        e.printStackTrace(System.err);
+                        route_btoa.System_err_println("Failed on record [" + cnt + "]");
+                        printStackTrace(e);
                     }
                 }
                 in.close();
@@ -165,10 +165,10 @@ public class route_btoa {
                     out.close();
                 }
             } catch (java.io.FileNotFoundException e) {
-                System.err.println("File not found: " + args[arg]);
+                route_btoa.System_err_println("File not found: " + args[arg]);
             } catch (Exception ex) {
-                System.err.println("Exception caught when reading " + args[arg]);
-                ex.printStackTrace(System.err);
+                route_btoa.System_err_println("Exception caught when reading " + args[arg]);
+                printStackTrace(ex);
             }
         } // for (int arg...
     } // main()
@@ -237,6 +237,18 @@ public class route_btoa {
             System.exit(exitCode);
         }
     }
-    
-    
+
+    public static void System_err_println(String str) {
+        if (outputErrToBuilder) {
+            errBuilder.append(str).append(System.lineSeparator());
+        } else {
+            System.err.println(str);
+        }
+    }
+
+    public static void printStackTrace(Throwable t) {
+        StringWriter errors = new StringWriter();
+        t.printStackTrace(new PrintWriter(errors));
+        System_err_println(errors.toString());
+    }
 }

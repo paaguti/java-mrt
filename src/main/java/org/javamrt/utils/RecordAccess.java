@@ -24,9 +24,9 @@ public class RecordAccess
       }
     /*
     } catch (java.lang.ArrayIndexOutOfBoundsException aioobe) {
-        aioobe.printStackTrace(System.err);
-        System.err.printf("Accessing %d bytes long buffer at pos %d\n",buffer.length,offset);
-	dump(System.err,buffer);
+        route_btoa.printStackTrace(aioobe);
+        route_btoa.System_err_println(String.format("Accessing %d bytes long buffer at pos %d",buffer.length,offset));
+	dump(buffer);
         route_btoa.exit(1);
     }
     */
@@ -87,7 +87,7 @@ public class RecordAccess
 
   static public void dump(byte[] buffer,int offset,int len)
   {
-    dump(System.out,buffer,offset,len);
+    dump(System.err,buffer,offset,len);
   }
 
   static public void dump(java.io.PrintStream out,byte[] buffer,int len)
@@ -97,18 +97,18 @@ public class RecordAccess
 
   static public void dump(byte[] buffer,int len)
   {
-    dump(System.out,buffer,len);
+    dump(System.err,buffer,len);
   }
 
   static public void dump(java.io.PrintStream out,byte[] buffer)
   {
-    out.printf("buffer is %d bytes long",buffer.length);
+      out.printf("buffer is %d bytes long", buffer.length);
     out.print(arrayToString(buffer,0,buffer.length));
   }
 
   static public void dump(byte[] buffer)
   {
-    dump(System.out,buffer,buffer.length);
+    dump(System.err,buffer,buffer.length);
   }
 
 }

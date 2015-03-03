@@ -5,11 +5,13 @@
 // http://www.gnu.org/licenses/lgpl-3.0-standalone.html
 
 package org.javamrt.mrt;
+
+import org.javamrt.progs.route_btoa;
+import org.javamrt.utils.RecordAccess;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
-
-import org.javamrt.utils.RecordAccess;
 
 
 
@@ -26,14 +28,14 @@ public class IndexTable
     byte[] collectorIdbyte = RecordAccess.getBytes (this.record, offset, 4);
     /*
       try {
-        System.out.println(InetAddress.getByAddress(collectorIdbyte).getHostAddress());
+        route_btoa.System_err_println(InetAddress.getByAddress(collectorIdbyte).getHostAddress());
       } catch (UnknownHostException e) {
-        e.printStackTrace();
+        route_btoa.printStackTrace(e);
       }
      */
     offset += 4;
     int nameLength = RecordAccess.getU16 (this.record, offset);
-    //System.out.println(nameLength);
+    //route_btoa.System_err_println(nameLength);
     offset += 2;
     // byte[] viewName = null;
     if (nameLength > 0)
@@ -44,7 +46,7 @@ public class IndexTable
     peerCount = RecordAccess.getU16 (this.record, offset);
     offset += 2;
     /*
-      System.out.println("\nRecord: "+this.record.length+"\nCollectorId: "+collectorId
+      route_btoa.System_err_println("\nRecord: "+this.record.length+"\nCollectorId: "+collectorId
       +"\nnameLength: "+nameLength+"\nfirstMask(byte): "+
       "\npeerCount: "+peerCount);
     */
@@ -63,10 +65,10 @@ public class IndexTable
 	int firstBit;
 	int secondBit;
 	//byte[] peerCount2=RecordAccess.getBytes(this.record, offset, 1);
-	//System.out.println("Bit 1: "+peerType);
+	//route_btoa.System_err_println("Bit 1: "+peerType);
 	if ((peerType & bit0) != 0)
 	  {
-	    //System.out.println("upit (peertype&bit0) tacan!");
+	    //route_btoa.System_err_println("upit (peertype&bit0) tacan!");
 	    firstBit = 16;
 	  }
 	else
@@ -74,18 +76,18 @@ public class IndexTable
 	if ((peerType & bit1) != 0)
 	  {
 	    secondBit = 4;
-	    //System.out.println("upit (peertype&bit1) tacan!");
+	    //route_btoa.System_err_println("upit (peertype&bit1) tacan!");
 	  }
 	else
 	  secondBit = 2;
-	//System.out.println("FirstBit: "+firstBit+"\nSecond Bit: "+secondBit+"\nOFFSET: "+offset);
+	//route_btoa.System_err_println("FirstBit: "+firstBit+"\nSecond Bit: "+secondBit+"\nOFFSET: "+offset);
 	long peerBgpId = RecordAccess.getU32 (this.record, offset);
-	//System.out.println("peerBgpId: "+peerBgpId+" numero i: "+i);
+	//route_btoa.System_err_println("peerBgpId: "+peerBgpId+" numero i: "+i);
 
 	peerBgp[i] = peerBgpId;
-	//System.out.println("peerBgpId: "+peerBgpId);
+	//route_btoa.System_err_println("peerBgpId: "+peerBgpId);
 	offset += 4;
-	//System.out.println("firstBIt: "+firstBit+" offset: "+offset+" recordlen: "+this.record.length);
+	//route_btoa.System_err_println("firstBIt: "+firstBit+" offset: "+offset+" recordlen: "+this.record.length);
 
 	try
 	{
@@ -95,12 +97,12 @@ public class IndexTable
 						firstBit));
 	} catch (UnknownHostException e1)
 	{
-	  e1.printStackTrace ();
+	  route_btoa.printStackTrace(e1);
 	}
 	peerIp.set (i, takeIp);
 	/*
 	   try{
-	   System.out.println("atresa1 je: "+InetAddress.getByAddress(RecordAccess.getBytes(this.record, offset, firstBit)).getHostAddress());
+	   route_btoa.System_err_println("atresa1 je: "+InetAddress.getByAddress(RecordAccess.getBytes(this.record, offset, firstBit)).getHostAddress());
 	   }
 	   catch(UnknownHostException e){}
 	 */
@@ -111,10 +113,10 @@ public class IndexTable
 	else
 	  takePeerAs = RecordAccess.getU32 (this.record, offset);
 	peerAs[i] = takePeerAs;
-	//System.out.println("PeerAs je: "+RecordAccess.getBytes(this.record,offset, secondBit));
+	//route_btoa.System_err_println("PeerAs je: "+RecordAccess.getBytes(this.record,offset, secondBit));
 	offset += secondBit;
       }
-    //for (int i=0;i<peerCount;i++) System.out.println(peerBgp[i]);
+    //for (int i=0;i<peerCount;i++) route_btoa.System_err_println(peerBgp[i]);
   }
   public long[] getPeerBgp ()
   {

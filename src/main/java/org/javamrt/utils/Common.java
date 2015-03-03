@@ -7,6 +7,9 @@
 package org.javamrt.utils;
 
 // import java.awt.GraphicsEnvironment;
+
+import org.javamrt.progs.route_btoa;
+
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -148,14 +151,14 @@ public class Common {
 		cal.set(Calendar.MILLISECOND,0);
 
 		printCal(cal,"UTC");
-		System.out.printf(" son %d segundos de la epoca\n",cal.getTimeInMillis()/1000L);
+		route_btoa.System_err_println(String.format(" son %d segundos de la epoca", cal.getTimeInMillis() / 1000L));
 	}
 
 	private static void printCal(Calendar cal2, String zone) {
-		System.out.printf("%s: %2d/%02d/%04d %2d:%02d:%02d", zone, cal2
-				.get(Calendar.DAY_OF_MONTH), cal2.get(Calendar.MONTH)+1, cal2
-				.get(Calendar.YEAR), cal2.get(Calendar.HOUR_OF_DAY), cal2
-				.get(Calendar.MINUTE), cal2.get(Calendar.SECOND));
+		route_btoa.System_err_println(String.format("%s: %2d/%02d/%04d %2d:%02d:%02d", zone, cal2
+                .get(Calendar.DAY_OF_MONTH), cal2.get(Calendar.MONTH) + 1, cal2
+                .get(Calendar.YEAR), cal2.get(Calendar.HOUR_OF_DAY), cal2
+                .get(Calendar.MINUTE), cal2.get(Calendar.SECOND)));
 	}
 
 }

@@ -5,12 +5,14 @@
 // http://www.gnu.org/licenses/lgpl-3.0-standalone.html
 
 package org.javamrt.mrt;
+
+import org.javamrt.progs.route_btoa;
+import org.javamrt.utils.RecordAccess;
+
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.Date;
-
-import org.javamrt.utils.RecordAccess;
 
 
 public class TableDump
@@ -26,20 +28,20 @@ protected TableDump(int           view,
 	    Attributes    attributes)
   {
     if (false)
-    System.out.printf("TableDump(int    view     =%d\n"+
-		      "   int           sequence = %d\n"+
-		      "   Prefix        prefix   = %s\n"+
-		      "   long          origTime = %d\n"+
-		      "   InetAddress   peer     = %s\n"+
-		      "   AS            peerAs   = %s\n"+
-		      "   Attributes    attributes = %s);\n",
-		      view,
-		      sequence,
-		      prefix,
-		      origTime,
-		      peer,
-		      peerAs,
-		      attributes);
+    route_btoa.System_err_println(String.format("TableDump(int    view     =%d\n" +
+                    "   int           sequence = %d\n" +
+                    "   Prefix        prefix   = %s\n" +
+                    "   long          origTime = %d\n" +
+                    "   InetAddress   peer     = %s\n" +
+                    "   AS            peerAs   = %s\n" +
+                    "   Attributes    attributes = %s);\n",
+            view,
+            sequence,
+            prefix,
+            origTime,
+            peer,
+            peerAs,
+            attributes));
 
     this.view       = view;
     this.sequence   = sequence;

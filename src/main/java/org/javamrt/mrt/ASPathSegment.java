@@ -6,9 +6,10 @@
 
 package org.javamrt.mrt;
 
-import java.util.LinkedList;
-
+import org.javamrt.progs.route_btoa;
 import org.javamrt.utils.RecordAccess;
+
+import java.util.LinkedList;
 
 
 /**
@@ -49,8 +50,8 @@ public class ASPathSegment
 				bLen += asSize;
 			}
 		} catch (Exception e) {
-			System.err.printf("len = %d,offset = %d; bLen = %d\n",len,offset,bLen);
-			RecordAccess.dump(System.err,buffer);
+			route_btoa.System_err_println(String.format("len = %d,offset = %d; bLen = %d", len, offset, bLen));
+			RecordAccess.dump(buffer);
 			throw e;
 		}
 	}

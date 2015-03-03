@@ -9,6 +9,7 @@ package org.javamrt.utils;
 import org.javamrt.progs.route_btoa;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Parse command line options the **IX way<br>
@@ -167,9 +168,7 @@ public class getopts {
 	public static String arg = null;
 
 	public static void main(String[] args) {
-		for (int i=0; i<args.length; i++)
-			System.out.print(args[i]+" ");
-		System.out.println();
+		route_btoa.System_err_println(Arrays.toString(args));
 		getopts test = new getopts(args,
 				new LongOpt('a',"arg", true, "<arg>: con argumento <arg>"),
 				new LongOpt('b',"beg", false,"     : sin argumento"),
@@ -179,27 +178,27 @@ public class getopts {
 		while ((opcion = test.nextOption()) > 0) {
 			switch (opcion){
 			case 'a':
-				System.out.println("option ["+opcion+"]("+test.optopt+") argument: "+test.optarg);
+				route_btoa.System_err_println("option ["+opcion+"]("+test.optopt+") argument: "+test.optarg);
 				break;
 			case 'b':
-				System.out.println("short and long without option: ["+opcion+"]"+test.optopt);
+				route_btoa.System_err_println("short and long without option: ["+opcion+"]"+test.optopt);
 				break;
 			case 'c':
-				System.out.println("Special short only option ["+opcion+"]"+test.optopt);
+				route_btoa.System_err_println("Special short only option ["+opcion+"]"+test.optopt);
 				break;
 			case 255:
-				System.out.println("Missing argument for "+test.opterr);
+				route_btoa.System_err_println("Missing argument for "+test.opterr);
 				route_btoa.exit(1);
 			default:
-				System.err.println("Error processing "+args[test.optind]);
+				route_btoa.System_err_println("Error processing "+args[test.optind]);
                 route_btoa.exit(1);
 			}
 		}
 		for (int arg=test.optind; arg<args.length;arg++) {
-			System.out.println("remaining "+args[arg]);
+			route_btoa.System_err_println("remaining "+args[arg]);
 		}
-		System.out.println();
-		test.printHelp(System.out);
+		route_btoa.System_err_println("");
+		test.printHelp(System.err);
 	}
 
 	public void printHelp(PrintStream out) {

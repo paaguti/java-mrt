@@ -6,6 +6,7 @@
 
 package org.javamrt.mrt;
 
+import org.javamrt.progs.route_btoa;
 import org.javamrt.utils.RecordAccess;
 
 
@@ -29,9 +30,8 @@ public class RFC4893 {
 	public static void replaceAS23456(byte[] buffer, ASPath aspath)
 			throws RFC4893Exception, AttributeException, Exception {
 		if (DEBUG) {
-			System.err.printf("ASPATH = %s\nAS4PATH attribute:\n", aspath
-					.toString());
-			RecordAccess.dump(System.err, buffer);
+			route_btoa.System_err_println(String.format("ASPATH = %s\nAS4PATH attribute:", aspath.toString()));
+			RecordAccess.dump(buffer);
 		}
 
 		if (buffer.length == 0)
@@ -54,8 +54,8 @@ public class RFC4893 {
 		}
 
 		if (DEBUG) {
-			System.err.printf("as4path    = %s\n", as4path);
-			System.err.printf("old ASPATH = %s\n", aspath);
+			route_btoa.System_err_println(String.format("as4path    = %s", as4path));
+			route_btoa.System_err_println(String.format("old ASPATH = %s", aspath));
 		}
 
 		/*
@@ -79,7 +79,7 @@ public class RFC4893 {
 		aspath.getPath().subList(asElement, aspath.length()).clear();
 		aspath.getPath().addAll(as4path.getPath());
 		if (DEBUG)
-			System.err.printf("new ASPath = %s\n", aspath.toString());
+			route_btoa.System_err_println(String.format("new ASPath = %s", aspath.toString()));
 
 		aspath.mkPrependers(); // rebuild prepender list
 	}
