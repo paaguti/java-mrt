@@ -6,6 +6,8 @@
 
 package org.javamrt.utils;
 
+import org.javamrt.progs.route_btoa;
+
 import java.io.PrintStream;
 
 /**
@@ -187,10 +189,10 @@ public class getopts {
 				break;
 			case 255:
 				System.out.println("Missing argument for "+test.opterr);
-				System.exit(1);
+				route_btoa.exit(1);
 			default:
 				System.err.println("Error processing "+args[test.optind]);
-				System.exit(1);
+                route_btoa.exit(1);
 			}
 		}
 		for (int arg=test.optind; arg<args.length;arg++) {

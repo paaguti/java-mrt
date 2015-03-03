@@ -26,6 +26,7 @@ public class route_btoa {
     public static boolean showIPv6 = true;
     public static boolean printRFC4893violations = false;
     public static String outputToFileExt = "";
+    public static boolean callSystemExit = true;
 
 	public static void main(String args[]) {
 		BGPFileReader in;
@@ -48,14 +49,14 @@ public class route_btoa {
 					if (showIPv4 == true && showIPv6 == true)
 						showIPv6 = false;
 					else
-						System.exit(usage(1));
+						exit(usage(1));
 					break;
 
 				case '6':
 					if (showIPv4 == true && showIPv6 == true)
 						showIPv4 = false;
 					else
-						System.exit(usage(1));
+						exit(usage(1));
 					break;
 				case 'D':
 					Debug.setDebug(true);
@@ -87,24 +88,25 @@ public class route_btoa {
                 
 				case 'h':
 				default:
-					System.exit(usage((opcion) == 'h' ? 0 : 1));
+					exit(usage((opcion) == 'h' ? 0 : 1));
 					break;
 				}
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
-				System.exit(1);
+				exit(1);
 			} catch (PrefixMaskException e) {
 				e.printStackTrace();
-				System.exit(1);
+				exit(1);
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				exit(1);
 			}
 		}
 
-		if (args.length == prueba.optind)
-			System.exit(usage(0));
-
+		if (args.length == prueba.optind) {
+            exit(usage(0));
+        }
+        
         FileWriter out;
         for (int arg = prueba.optind; arg < args.length; arg++) {
             out = null;
@@ -229,5 +231,12 @@ public class route_btoa {
             System.out.println(data);
         }
     }
+    
+    public static void exit(int exitCode) {
+        if (callSystemExit) {
+            System.exit(exitCode);
+        }
+    }
+    
     
 }

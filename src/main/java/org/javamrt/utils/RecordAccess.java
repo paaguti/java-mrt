@@ -27,7 +27,7 @@ public class RecordAccess
         aioobe.printStackTrace(System.err);
         System.err.printf("Accessing %d bytes long buffer at pos %d\n",buffer.length,offset);
 	dump(System.err,buffer);
-        System.exit(1);
+        route_btoa.exit(1);
     }
     */
     return result;

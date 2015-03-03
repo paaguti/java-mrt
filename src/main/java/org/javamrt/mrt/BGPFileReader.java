@@ -6,17 +6,13 @@
 
 package org.javamrt.mrt;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.javamrt.utils.Debug;
+import org.javamrt.utils.RecordAccess;
+
+import java.io.*;
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.zip.GZIPInputStream;
-
-import org.javamrt.utils.Debug;
-import org.javamrt.utils.RecordAccess;
 
 public class BGPFileReader {
 	private static final boolean debug = false;
@@ -442,7 +438,7 @@ public class BGPFileReader {
 			// System.out.println("Peer "+i+"("+bgpId[i]+"): "+peerIP[i].getHostAddress()+" "+peerAS[i]);
 		}
 
-		// System.exit(0);
+		// route_btoa.exit(0);
 	}
 
 	private long[] bgpId = null;
