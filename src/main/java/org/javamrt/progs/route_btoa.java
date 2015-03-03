@@ -6,34 +6,26 @@
 
 package org.javamrt.progs;
 
+import org.javamrt.mrt.*;
+import org.javamrt.utils.Debug;
+import org.javamrt.utils.getopts;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.javamrt.mrt.AS;
-import org.javamrt.mrt.BGPFileReader;
-import org.javamrt.mrt.Bgp4Update;
-import org.javamrt.mrt.KeepAlive;
-import org.javamrt.mrt.MRTRecord;
-import org.javamrt.mrt.Notification;
-import org.javamrt.mrt.Open;
-import org.javamrt.mrt.Prefix;
-import org.javamrt.mrt.PrefixMaskException;
-import org.javamrt.mrt.RFC4893Exception;
-import org.javamrt.mrt.StateChange;
-import org.javamrt.mrt.TableDump;
-import org.javamrt.utils.Debug;
-import org.javamrt.utils.getopts;
-
 public class route_btoa {
 
-	private static Prefix prefix = null;
-	private static InetAddress peer = null;
-	private static AS      originator = null;
-	private static AS      traverses = null;
-	private static boolean showIPv4 = true;
-	private static boolean showIPv6 = true;
-	private static boolean printRFC4893violations = false;
+	public static Prefix prefix = null;
+    public static InetAddress peer = null;
+    public static AS      originator = null;
+    public static AS      traverses = null;
+    public static boolean showIPv4 = true;
+    public static boolean showIPv6 = true;
+    public static boolean printRFC4893violations = false;
+    public static String outputToFileExt = "";
 
 	public static void main(String args[]) {
 		BGPFileReader in;
@@ -41,9 +33,9 @@ public class route_btoa {
 		getopts prueba;
 
 		if (Debug.compileDebug)
-			prueba = new getopts(args, "46DhmP:p:o:t:v");
+			prueba = new getopts(args, "46Dhmf:P:p:o:t:v");
 		else
-			prueba = new getopts(args, "46hmP:p:o:v:t:");
+			prueba = new getopts(args, "46hmf:P:p:o:v:t:");
 
 		char opcion;
 
@@ -89,6 +81,10 @@ public class route_btoa {
 				case 't':
 					traverses = AS.parseString(prueba.optarg);
 					break;
+                case 'f':
+                    outputToFileExt = prueba.optarg;
+                    break;
+                
 				case 'h':
 				default:
 					System.exit(usage((opcion) == 'h' ? 0 : 1));
@@ -109,63 +105,74 @@ public class route_btoa {
 		if (args.length == prueba.optind)
 			System.exit(usage(0));
 
-		for (int arg = prueba.optind; arg < args.length; arg++) {
-			try {
-				in = new BGPFileReader(args[arg]);
-				while (false == in.eof()) {
-				try {
-					if ((record = in.readNext()) == null)
-						break;
-						if (record instanceof Open
-								|| record instanceof KeepAlive
-								|| record instanceof Notification)
-							continue;
-						if (record instanceof StateChange) {
-							if (oldall == true && checkPeer(record)) {
-								System.out.println(record.toString());
-								continue;
-							}
-						}
-						if ((record instanceof TableDump)
-								|| (record instanceof Bgp4Update)) {
+        FileWriter out;
+        for (int arg = prueba.optind; arg < args.length; arg++) {
+            out = null;
+            try {
+                in = new BGPFileReader(args[arg]);
+                if (!outputToFileExt.equals("")) {
+                    out = new FileWriter(args[arg] +
+                            (outputToFileExt.startsWith(".") ? outputToFileExt : "." + outputToFileExt));
+                }
+                int cnt=0;
+                while (false == in.eof()) {
+                    try {
+                        if ((record = in.readNext()) == null)
+                            break;
+                        ++cnt;
+                        if (record instanceof Open
+                                || record instanceof KeepAlive
+                                || record instanceof Notification)
+                            continue;
+                        if (record instanceof StateChange) {
+                            if (oldall == true && checkPeer(record)) {
+                                outputData(record.toString(), out);
+                                continue;
+                            }
+                        }
+                        if ((record instanceof TableDump)
+                                || (record instanceof Bgp4Update)) {
 
-							if (!showIPv4 && record.getPrefix().isIPv4())
-								continue;
-							if (!showIPv6 && record.getPrefix().isIPv6())
-								continue;
-							try {
-								if (!checkPrefix(record))
-									continue;
-								if (!checkPeer(record))
-									continue;
-								if (!checkASPath(record))
-									continue;
-							} catch (Exception e) {
-								e.printStackTrace(System.err);
-								System.err.printf("record = %s\n",record);
-							}
-							System.out.println(record);
-						}
-					} catch (RFC4893Exception rfce) {
-						if (printRFC4893violations)
-							System.err.println(rfce.toString());
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}
-				in.close();
-			} catch (java.io.FileNotFoundException e) {
-				System.out.println("File not found: " + args[arg]);
-			} catch (Exception ex) {
-				System.err
-						.println("Exception caught when reading " + args[arg]);
-				ex.printStackTrace(System.err);
-			}
-		} // for (int arg...
-	} // main()
+                            if (!showIPv4 && record.getPrefix().isIPv4())
+                                continue;
+                            if (!showIPv6 && record.getPrefix().isIPv6())
+                                continue;
+                            try {
+                                if (!checkPrefix(record))
+                                    continue;
+                                if (!checkPeer(record))
+                                    continue;
+                                if (!checkASPath(record))
+                                    continue;
+                            } catch (Exception e) {
+                                e.printStackTrace(System.err);
+                                System.err.printf("record = %s\n",record);
+                            }
+                            outputData(record.toString(), out);
+                        }
+                    } catch (RFC4893Exception rfce) {
+                        if (printRFC4893violations)
+                            System.err.println(rfce.toString());
+                    } catch (Exception e) {
+                        System.err.println("Failed on record [" + cnt + "]");
+                        e.printStackTrace(System.err);
+                    }
+                }
+                in.close();
+                if (out != null) {
+                    out.close();
+                }
+            } catch (java.io.FileNotFoundException e) {
+                System.err.println("File not found: " + args[arg]);
+            } catch (Exception ex) {
+                System.err.println("Exception caught when reading " + args[arg]);
+                ex.printStackTrace(System.err);
+            }
+        } // for (int arg...
+    } // main()
 
 
-	private static int usage(int retval) {
+    private static int usage(int retval) {
 		PrintStream ps = System.err;
 
 		ps.println("route_btoa <options> f1 ...");
@@ -173,6 +180,7 @@ public class route_btoa {
 		ps.println("  -m        legacy compatibility wth MRT: include all records");
 		ps.println("  -4        print IPv4 prefixes only");
 		ps.println("  -6        print IPv6 prefixes only");
+        ps.println("  -f ext    writes the data to a file with extension e.g. .txt or txt");
 		ps.println("  -p peer   print updates from a specific peer only");
 		ps.println("  -P prefix print updates for a specific prefix only");
 		if (Debug.compileDebug)
@@ -213,4 +221,13 @@ public class route_btoa {
 		//
 		return originator.equals(mrt.getASPath().generator());
 	}
+    
+    private static void outputData(String data, FileWriter output) throws IOException {
+        if (output != null) {
+            output.write(data + System.lineSeparator());
+        } else {
+            System.out.println(data);
+        }
+    }
+    
 }
