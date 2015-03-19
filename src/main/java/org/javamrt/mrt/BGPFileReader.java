@@ -166,21 +166,21 @@ public class BGPFileReader {
 			 * if the queue is empty, read from the file
 			 */
 
-			int leidos = this.in.read(header, 0, header.length);
+            int bytesRead = readFromInputStream(this.in, header, header.length);
 			recordCounter ++;
 			/*
 			 * EOF
 			 */
-			if (leidos <= 0) {
+			if (bytesRead <= 0) {
 				this.eof = true;
 				return null;
 			}
 			/*
 			 * truncated
 			 */
-			if (leidos != this.header.length) {
+			if (bytesRead != this.header.length) {
 				this.eof = true;
-				throw new BGPFileReaderException("Truncated file: " + leidos
+				throw new BGPFileReaderException("Truncated file: " + bytesRead
 						+ " instead of " + this.header.length + " bytes", header);
 			}
 			if (Debug.compileDebug)
@@ -196,11 +196,11 @@ public class BGPFileReader {
 
 			this.record = new byte[recordlen];
 
-			leidos = this.in.read(record, 0, record.length);
+            bytesRead = readFromInputStream(this.in, record, record.length);
 
-			if (leidos != this.record.length) {
+			if (bytesRead != this.record.length) {
 				this.eof = true;
-				throw new BGPFileReaderException("Truncated file: " + leidos
+				throw new BGPFileReaderException("Truncated file: " + bytesRead
 						+ " instead of " + this.record.length + " bytes",record);
 			}
 
@@ -248,6 +248,20 @@ public class BGPFileReader {
 			}
 		}
 	}
+
+    /**
+     * Safely read from input streams that can be blocked or slow (e.g. compressed streams).
+     * @return the total of bytes read from the input stream or -1 if <code>EOF</code> is first found
+     */
+    private static int readFromInputStream(BufferedInputStream bis, byte[] output, int length) throws IOException {
+        int remaining = length;
+        int read;
+
+        while (((read = bis.read(output, length - remaining, remaining)) > 0) && ((remaining -= read) > 0));
+
+        return ((read == -1 && remaining == length) ? -1 : length - remaining);
+
+    }
 
 	private MRTRecord parseTableDump(int subtype) throws Exception {
 		switch (subtype) {
