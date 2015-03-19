@@ -166,7 +166,7 @@ public class BGPFileReader {
 			 * if the queue is empty, read from the file
 			 */
 
-            int bytesRead = readFromInputStream(this.in, header, header.length);
+			int bytesRead = readFromInputStream(this.in, header, header.length);
 			recordCounter ++;
 			/*
 			 * EOF
@@ -196,7 +196,7 @@ public class BGPFileReader {
 
 			this.record = new byte[recordlen];
 
-            bytesRead = readFromInputStream(this.in, record, record.length);
+			bytesRead = readFromInputStream(this.in, record, record.length);
 
 			if (bytesRead != this.record.length) {
 				this.eof = true;
@@ -249,19 +249,18 @@ public class BGPFileReader {
 		}
 	}
 
-    /**
-     * Safely read from input streams that can be blocked or slow (e.g. compressed streams).
-     * @return the total of bytes read from the input stream or -1 if <code>EOF</code> is first found
-     */
-    private static int readFromInputStream(BufferedInputStream bis, byte[] output, int length) throws IOException {
-        int remaining = length;
-        int read;
+	/**
+	 * Safely read from input streams that can be blocked or slow (e.g. compressed streams).
+	 * @return the total of bytes read from the input stream or -1 if <code>EOF</code> is first found
+	 */
+	private static int readFromInputStream(BufferedInputStream bis, byte[] output, int length) throws IOException {
+		int remaining = length;
+		int read;
 
-        while (((read = bis.read(output, length - remaining, remaining)) > 0) && ((remaining -= read) > 0));
+		while (((read = bis.read(output, length - remaining, remaining)) > 0) && ((remaining -= read) > 0));
 
-        return ((read == -1 && remaining == length) ? -1 : length - remaining);
-
-    }
+		return ((read == -1 && remaining == length) ? -1 : length - remaining);
+	}
 
 	private MRTRecord parseTableDump(int subtype) throws Exception {
 		switch (subtype) {
