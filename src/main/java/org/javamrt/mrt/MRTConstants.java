@@ -74,6 +74,7 @@ public class MRTConstants {
 	public static final int ATTRIBUTE_EXT_COMMUNITIES = 15;
 	public static final int ATTRIBUTE_AS4_PATH = 16;
 	public static final int ATTRIBUTE_AS4_AGGREGATOR = 17;
+	public static final int ATTRIBUTE_CONNECTOR = 20;
 	public static final int ATTRIBUTE_ASPATHLIMIT = 21;
 	public static final int ATTRIBUTE_TOTAL = 22;
 

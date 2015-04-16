@@ -222,6 +222,12 @@ public class Attributes {
 					Debug.println("ATTRIBUTE_AS4_AGGREGATOR ");
 				break;
 
+			case MRTConstants.ATTRIBUTE_CONNECTOR:
+				// deprecated attribute. ignoring
+				if (Debug.compileDebug)
+					Debug.println("ATTRIBUTE_CONNECTOR (deprecated)");
+				break;
+
 			// Expired but present in RRC!
 
 			case MRTConstants.ATTRIBUTE_ASPATHLIMIT:
