@@ -239,6 +239,12 @@ public class Attributes {
 				this.hasASPATHLimit = true;
 				break;
 
+			case MRTConstants.ATTR_SET:
+				// unsupported attribute. ignoring
+				if (Debug.compileDebug)
+					Debug.println("ATTR_SET");
+				break;
+
 			default:
 				throw new AttributeException(type);
 			}
