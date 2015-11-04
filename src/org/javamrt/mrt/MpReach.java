@@ -25,7 +25,7 @@ public class MpReach implements Attribute {
 	// private int snpaNo;
 	// private Vector < InetAddress > snpaVector;
 
-	MpReach(byte[] buffer) throws Exception {
+	MpReach(byte[] buffer, boolean addPath) throws Exception {
 		// snpaVector = new Vector < InetAddress > ();
 		nlriVector = new Vector<Nlri>();
 
@@ -126,7 +126,7 @@ public class MpReach implements Attribute {
 		 */
 
 		while (offset < buffer.length) {
-			Nlri base = new Nlri(buffer, offset, afi);
+			Nlri base = new Nlri(buffer, offset, afi, addPath);
 			offset += base.getOffset();
 			nlriVector.addElement(base);
 		}

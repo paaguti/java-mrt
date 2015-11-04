@@ -83,7 +83,7 @@ protected TableDump(int           view,
     int attrLength = RecordAccess.getU16 (record, decodeOffset);
     decodeOffset += 2;
     this.attributes =
-      new Attributes (record, attrLength, decodeOffset);
+      new Attributes (record, attrLength, decodeOffset, false);
 
     setAsPath();
   }

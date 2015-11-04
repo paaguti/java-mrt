@@ -13,19 +13,19 @@ import org.javamrt.utils.RecordAccess;
 
 public class Attributes {
 
-	public Attributes(byte[] record, int attrLen, int attrPos, int attrBytes)
+	public Attributes(byte[] record, int attrLen, int attrPos, int attrBytes, boolean addPath)
 			throws Exception {
 		if (attrBytes != 2 && attrBytes != 4)
 			throw new AttributeException(String.format(
 					"Attributes needs attrBytes 2 or 4 (not %d", attrBytes));
-		decode(record, attrLen, attrPos, attrBytes);
+		decode(record, attrLen, attrPos, attrBytes, addPath);
 	}
 
-	public Attributes(byte[] record, int attrLen, int attrPos) throws Exception {
-		decode(record, attrLen, attrPos, 2);
+	public Attributes(byte[] record, int attrLen, int attrPos, boolean addPath) throws Exception {
+		decode(record, attrLen, attrPos, 2, addPath);
 	}
 
-	private void decode(byte[] record, int attrLen, int attrPos, int attrBytes)
+	private void decode(byte[] record, int attrLen, int attrPos, int attrBytes, boolean addPath)
 			throws Exception {
 		byte[] buffer;
 
@@ -161,7 +161,7 @@ public class Attributes {
 				break;
 
 			case MRTConstants.MP_REACH:
-				MpReach mpReach = new MpReach(buffer);
+				MpReach mpReach = new MpReach(buffer, addPath);
 				attributes.set(MRTConstants.ATTRIBUTE_MP_REACH, mpReach);
 				InetAddress nhia = mpReach.getNextHop();
 				try {
@@ -176,7 +176,7 @@ public class Attributes {
 				break;
 
 			case MRTConstants.MP_UNREACH:
-				Attribute mpUnreach = new MpUnReach(buffer);
+				Attribute mpUnreach = new MpUnReach(buffer, addPath);
 				attributes.set(MRTConstants.ATTRIBUTE_MP_UNREACH, mpUnreach);
 				if (Debug.compileDebug)
 					Debug.println("ATTRIBUTE_MP_UNREACH " + mpUnreach);
