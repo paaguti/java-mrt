@@ -8,30 +8,29 @@ package org.javamrt.mrt;
 
 import org.javamrt.utils.RecordAccess;
 
-public class Med
-  implements Attribute
+public class Med implements Attribute
 {
-  public Med (long med)
-  {
-    this.med = med;
-  }
+	protected long med;
 
-  public Med (byte[] buffer)
-  {
-    med = RecordAccess.getU32 (buffer, 0);
-  }
+	public Med(long med)
+	{
+		this.med = med;
+	}
 
-  public String toString ()
-  {
-    return ""+med;
-  }
+	public Med(byte[] buffer)
+	{
+		med = RecordAccess.getU32 (buffer, 0);
+	}
 
-  public long getMed ()
-  {
-    return med;
-  }
+	public String toString ()
+	{
+		return Long.toString(med);
+	}
 
-  protected long med;
+	public long getMed ()
+	{
+		return med;
+	}
 
 	public boolean equals(Object o) {
 		if (o == null)
@@ -42,5 +41,4 @@ public class Med
 			return ((Med) o).med == this.med;
 		return false;
 	}
-
 }

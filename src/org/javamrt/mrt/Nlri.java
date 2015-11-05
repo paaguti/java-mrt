@@ -49,24 +49,26 @@ public class Nlri extends Prefix
 		int i=0;
 
 		while (i < bytes)
-			this.base[i++] = (byte)RecordAccess.getU8(record,offset++); //extracting byte by byte of prefix field
+			this.base[i++] = (byte) RecordAccess.getU8(record,offset++); //extracting byte by byte of prefix field
 		//and adding to address array
+		
+		// not needed as java initializes arrays already with 0s
 		while (i < this.base.length) //filling up with zeros to complete the length of IPv4/v6 address
 			this.base[i++] = 0;
 
-		setPrefix(this.base,this.maskLength);
+		setPrefix(this.base, this.maskLength);
 	}
 
 
 	public Prefix toPrefix()
 	{
-		return (Prefix)this;
+		return (Prefix) this;
 	}
 	
 	public String toString()
 	{
 		String string = super.toString();
-		if (pathId != -1) string.concat(":").concat(Long.toString(pathId));
+		if (pathId != -1) string = string.concat(":").concat(Long.toString(pathId));
 		return string;
 	}
 
@@ -74,7 +76,7 @@ public class Nlri extends Prefix
 	{
 		int offset = 0;
 		if (pathId != -1) offset = 4; 
-		offset = this.bytes + 1;
+		offset += this.bytes + 1;
 		return offset;
 	}
 }

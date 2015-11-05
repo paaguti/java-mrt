@@ -12,6 +12,11 @@ import org.javamrt.utils.Debug;
 import org.javamrt.utils.RecordAccess;
 
 public class Attributes {
+	private String toStr = null;
+	/*
+	 * private Vector <Attribute> getAttributes () { return attributes; }
+	 */
+	private Vector<Attribute> attributes = new Vector<Attribute>(MRTConstants.ATTRIBUTE_TOTAL + 1);
 
 	public Attributes(byte[] record, int attrLen, int attrPos, int attrBytes, boolean addPath)
 			throws Exception {
@@ -35,9 +40,7 @@ public class Attributes {
 			Debug.printf("Attributes(...,%d,%d,%d)\n", attrLen, attrPos,
 					attrBytes);
 
-		attributes = new Vector<Attribute>(MRTConstants.ATTRIBUTE_TOTAL);
-
-		for (int i = 0; i < MRTConstants.ATTRIBUTE_TOTAL; i++)
+		for (int i = 0; i <= MRTConstants.ATTRIBUTE_TOTAL; i++)
 			if (i == MRTConstants.ATTRIBUTE_NEXT_HOP)
 				attributes.addElement(new NextHop());
 			else
@@ -163,7 +166,7 @@ public class Attributes {
 			case MRTConstants.MP_REACH:
 				MpReach mpReach = new MpReach(buffer, addPath);
 				attributes.set(MRTConstants.ATTRIBUTE_MP_REACH, mpReach);
-				InetAddress nhia = mpReach.getNextHop();
+				InetAddress nhia = mpReach.getNextHops().firstElement();
 				try {
 					NextHop nh = new NextHop(nhia);
 					attributes.set(MRTConstants.ATTRIBUTE_NEXT_HOP, nh);
@@ -239,11 +242,6 @@ public class Attributes {
 		}
 	}
 
-	/*
-	 * private Vector <Attribute> getAttributes () { return attributes; }
-	 */
-	private Vector<Attribute> attributes;
-
 	public Attribute getAttribute(int index) throws Exception {
 		return attributes.elementAt(index);
 	}
@@ -254,7 +252,7 @@ public class Attributes {
 
 		toStr = new String();
 
-		for (int i = MRTConstants.ATTRIBUTE_AS_PATH; i <= MRTConstants.ATTRIBUTE_AGGREGATOR; i++) {
+		for (int i = MRTConstants.ATTRIBUTE_AS_PATH; i <= MRTConstants.ATTRIBUTE_TOTAL; i++) {
 			if (attributes.elementAt(i) != null)
 				toStr = toStr.concat(attributes.elementAt(i).toString());
 			else {
@@ -317,6 +315,4 @@ public class Attributes {
 		} // else
 		return false;
 	}
-
-	private String toStr = null;
 }

@@ -50,8 +50,7 @@ public class MRTRecord {
 	// will be overriden by derived classes
 
 	public String toString() {
-		return String
-				.format("MRT|%d|%d|%d", this.time, this.type, this.subtype);
+		return String.format("MRT|%d|%d|%d", this.time, this.type, this.subtype);
 	}
 
 	public boolean hasAsPathPrepend() {

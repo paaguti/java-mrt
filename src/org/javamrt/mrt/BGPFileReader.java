@@ -95,8 +95,7 @@ public class BGPFileReader {
 	}
 
 	public BGPFileReader(File f) throws IOException {
-		if (!f.exists())
-			throw new java.io.FileNotFoundException();
+		if (!f.exists()) throw new java.io.FileNotFoundException();
 		FileInputStream inStream = new FileInputStream(f);
 		this.toString = f.getCanonicalPath();
 		if (this.toString.endsWith(".gz")) {
@@ -129,15 +128,7 @@ public class BGPFileReader {
 	public String toString() {
 		return this.toString;
 	}
-	/***
-	 *
-	 * MRTRecord readNext()
-	 *
-	 * returns next record on successful completion null on EOF
-	 *
-	 * throws Exception when something goes wrong
-	 */
-
+	
 	/**
 	 * @return the number of MRT binary format records read.<br>
 	 * In the new MRT record formats, that has little or nothing<br>
@@ -168,8 +159,7 @@ public class BGPFileReader {
 			/*
 			 * Help GC
 			 */
-			if (record != null)
-				record = null;
+			if (record != null) record = null;
 			/*
 			 * if the queue is empty, read from the file
 			 */
@@ -284,11 +274,13 @@ public class BGPFileReader {
 		// System.out.println("parseBgp4mp("+MRTConstants.mpSubType(subtype)+")");
 		switch (subtype) {
 		case MRTConstants.BGP4MP_MESSAGE:
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE) ? 2 : 4, false);
 		case MRTConstants.BGP4MP_MESSAGE_AS4:
-			return parseBgp4Update(subtype, false);
-		case MRTConstants.BGP4MP_MESSAGE_AP:
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE_AS4) ? 4 : 2, false);
+		case MRTConstants.BGP4MP_MESSAGE_ADDPATH:
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE_ADDPATH) ? 2 : 4, true);
 		case MRTConstants.BGP4MP_MESSAGE_AS4_ADDPATH:
-			return parseBgp4Update(subtype, true);
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE_AS4_ADDPATH) ? 4 : 2, true);
 			/*
 			 * TODO
 			 * TTOODDOO::::

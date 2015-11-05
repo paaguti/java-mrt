@@ -7,22 +7,12 @@
 package org.javamrt.mrt;
 import java.net.InetAddress;
 
-public class Advertisement
-  extends Bgp4Update
+public class Advertisement extends Bgp4Update
 {
 
-public
-    Advertisement(byte[]      header,
-		  InetAddress peerIP,
-		  AS          peerAS,
-		  Prefix      prefix,
-		  Attributes  updateAttr)
+public Advertisement(byte[] header, InetAddress peerIP, AS peerAS, Prefix prefix, Attributes updateAttr)
   {
-    super(header,
-	  peerIP,
-	  peerAS,
-	  prefix,
-	  updateAttr);
+    super(header, peerIP, peerAS, prefix, updateAttr);
     this.updateType = 'A';
     //
     //    this.updateStr  = updateStr;

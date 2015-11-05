@@ -157,8 +157,7 @@ public class route_btoa {
 			} catch (java.io.FileNotFoundException e) {
 				System.out.println("File not found: " + args[arg]);
 			} catch (Exception ex) {
-				System.err
-						.println("Exception caught when reading " + args[arg]);
+				System.err.println("Exception caught when reading " + args[arg]);
 				ex.printStackTrace(System.err);
 			}
 		} // for (int arg...

@@ -10,6 +10,8 @@ import org.javamrt.utils.RecordAccess;
 
 
 public class LocalPref implements Attribute {
+	protected long localPref;
+	
 	LocalPref(byte[] buffer) {
 		localPref = RecordAccess.getU32(buffer, 0);
 	}
@@ -22,8 +24,6 @@ public class LocalPref implements Attribute {
 		return localPref;
 	}
 
-	protected long localPref;
-
 	public boolean equals(Object o) {
 		if (o == null)
 			return false;
@@ -33,5 +33,4 @@ public class LocalPref implements Attribute {
 			return ((LocalPref) o).localPref == this.localPref;
 		return false;
 	}
-
 }

@@ -11,9 +11,9 @@ import java.util.Vector;
 import org.javamrt.utils.RecordAccess;
 */
 
-public class genericRib extends MRTRecord
+public class GenericRib extends MRTRecord
 {
-  public genericRib ()
+  public GenericRib ()
   {
     super ();
 

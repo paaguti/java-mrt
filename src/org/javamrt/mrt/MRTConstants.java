@@ -111,7 +111,7 @@ public class MRTConstants {
 	public static final int BGP4MP_STATE_CHANGE_AS4 = 5;
 	public static final int BGP4MP_MESSAGE_LOCAL = 6;
 	public static final int BGP4MP_MESSAGE_LOCAL_AS4 = 7;
-	public static final int BGP4MP_MESSAGE_AP = 8;
+	public static final int BGP4MP_MESSAGE_ADDPATH = 8;
 	public static final int BGP4MP_MESSAGE_AS4_ADDPATH = 9;
 	public static final int BGP4MP_MESSAGE_LOCAL_ADDPATH = 10;
 	public static final int BGP4MP_MESSAGE_LOCAL_AS4_ADDPATH = 11;
@@ -128,12 +128,16 @@ public class MRTConstants {
 			return "BGP4MP_STATE_CHANGE";
 		case BGP4MP_MESSAGE:
 			return "BGP4MP_MESSAGE";
+		case BGP4MP_MESSAGE_ADDPATH:
+			return "BGP4MP_MESSAGE_ADDPATH";
 		case BGP4MP_ENTRY:
 			return "BGP4MP_ENTRY";
 		case BGP4MP_SNAPSHOT:
 			return "BGP4MP_SNAPSHOT";
 		case BGP4MP_MESSAGE_AS4:
 			return "BGP4MP_MESSAGE_AS4";
+		case BGP4MP_MESSAGE_AS4_ADDPATH:
+			return "BGP4MP_MESSAGE_AS4_ADDPATH";
 		case BGP4MP_STATE_CHANGE_AS4:
 			return "BGP4MP_STATE_CHANGE_AS4";
 		default:
