@@ -12,7 +12,7 @@ java -cp mrt.jar org.javamrt.progs.MRT_ByteToAscii test/dump_as51861_addpath_dis
 ```bash
 diff test/dump_as51861_addpath_disabled_bird_1.5.0_patched.txt_new test/dump_as51861_addpath_disabled_bird_1.5.0_patched.txt
 ```
-The diff command should not finish without showing any differences.
+The diff command must finish without showing any differences.
 
 * For enabled add path support:
 ```bash
@@ -22,4 +22,4 @@ java -cp mrt.jar org.javamrt.progs.MRT_ByteToAscii test/dump_as51861_addpath_ena
 ```bash
 diff test/dump_as51861_addpath_enabled_bird_1.5.0_patched.txt_new test/dump_as51861_addpath_enabled_bird_1.5.0_patched.txt
 ```
-The diff command should not finish without showing any differences.
+The diff command must finish without showing any differences.
