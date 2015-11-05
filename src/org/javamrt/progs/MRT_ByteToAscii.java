@@ -23,9 +23,9 @@ import org.javamrt.mrt.RFC4893Exception;
 import org.javamrt.mrt.StateChange;
 import org.javamrt.mrt.TableDump;
 import org.javamrt.utils.Debug;
-import org.javamrt.utils.getopts;
+import org.javamrt.utils.GetOpts;
 
-public class route_btoa {
+public class MRT_ByteToAscii {
 
 	private static Prefix prefix = null;
 	private static InetAddress peer = null;
@@ -38,12 +38,12 @@ public class route_btoa {
 	public static void main(String args[]) {
 		BGPFileReader in;
 		MRTRecord record;
-		getopts prueba;
+		GetOpts prueba;
 
 		if (Debug.compileDebug)
-			prueba = new getopts(args, "46DhmP:p:o:t:v");
+			prueba = new GetOpts(args, "46DhmP:p:o:t:v");
 		else
-			prueba = new getopts(args, "46hmP:p:o:v:t:");
+			prueba = new GetOpts(args, "46hmP:p:o:v:t:");
 
 		char opcion;
 
@@ -167,7 +167,7 @@ public class route_btoa {
 	private static int usage(int retval) {
 		PrintStream ps = System.err;
 
-		ps.println("route_btoa <options> f1 ...");
+		ps.println("MRT_ByteToAscii <options> f1 ...");
 		ps.println("  -h        print this help message");
 		ps.println("  -m        legacy compatibility wth MRT: include all records");
 		ps.println("  -4        print IPv4 prefixes only");

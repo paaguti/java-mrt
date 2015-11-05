@@ -22,7 +22,7 @@ public class ClusterId implements Attribute
 
 		for (int i = 0; i < rcid.length; i++)
 		{
-			rcid[i] = RecordAccess.getU16 (buffer, i*2);
+			rcid[i] = RecordAccess.getU16(buffer, i*2);
 		}
 		clusterId = null;
 	}

@@ -15,7 +15,7 @@ import java.io.PrintStream;
  * @author paag
  * @version 2.00
  */
-public class getopts {
+public class GetOpts {
 	/**
 	 * next option to process
 	 */
@@ -40,7 +40,7 @@ public class getopts {
 	 * @param args
 	 * @param options
 	 */
-	public getopts(String[] args,LongOpt... options){
+	public GetOpts(String[] args,LongOpt... options){
 		this.args = args;
 		this.options = options;
 		this.optind  = 0;
@@ -50,7 +50,7 @@ public class getopts {
 	 * create a command-line parser for the 'old' short options
 	 * getopts options = new getopts(args,"abc:d:E");
 	 */
-	public getopts(String[] args, String optString) {
+	public GetOpts(String[] args, String optString) {
 		this.optind = 0;
 		this.args=args;
 
@@ -168,7 +168,7 @@ public class getopts {
 		for (int i=0; i<args.length; i++)
 			System.out.print(args[i]+" ");
 		System.out.println();
-		getopts test = new getopts(args,
+		GetOpts test = new GetOpts(args,
 				new LongOpt('a',"arg", true, "<arg>: con argumento <arg>"),
 				new LongOpt('b',"beg", false,"     : sin argumento"),
 				new LongOpt('c',null, false, "     : sin largo"));
