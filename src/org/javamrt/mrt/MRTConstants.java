@@ -96,10 +96,10 @@ public class MRTConstants {
 	public static final int RIB_IPV6_MULTICAST = 5;
 	public static final int RIB_GENERIC = 6;
 	public static final int RIB_GEO_PEER_TABLE = 7;
-	public static final int RIB_IPV4_UNICAST_AP = 8;
-	public static final int RIB_IPV4_MULTICAST_AP = 9;
-	public static final int RIB_IPV6_UNICAST_AP = 10;
-	public static final int RIB_IPV6_MULTICAST_AP = 11;
+	public static final int RIB_IPV4_UNICAST_ADDPATH = 8;
+	public static final int RIB_IPV4_MULTICAST_ADDPATH = 9;
+	public static final int RIB_IPV6_UNICAST_ADDPATH = 10;
+	public static final int RIB_IPV6_MULTICAST_ADDPATH = 11;
 	public static final int RIB_GENERIC_AP = 12;
 
 	public static final int BGP4MP = 16;
@@ -112,9 +112,9 @@ public class MRTConstants {
 	public static final int BGP4MP_MESSAGE_LOCAL = 6;
 	public static final int BGP4MP_MESSAGE_LOCAL_AS4 = 7;
 	public static final int BGP4MP_MESSAGE_AP = 8;
-	public static final int BGP4MP_MESSAGE_AS4_AP = 9;
-	public static final int BGP4MP_MESSAGE_LOCAL_AP = 10;
-	public static final int BGP4MP_MESSAGE_LOCAL_AS4_AP = 11;
+	public static final int BGP4MP_MESSAGE_AS4_ADDPATH = 9;
+	public static final int BGP4MP_MESSAGE_LOCAL_ADDPATH = 10;
+	public static final int BGP4MP_MESSAGE_LOCAL_AS4_ADDPATH = 11;
 
 	public static final int BGP4MSG_OPEN = 1;
 	public static final int BGP4MSG_UPDATE = 2;

@@ -18,6 +18,6 @@ Limitations:
 * RIB_GENERIC not supported
 * BGP4MP_MESSAGE_LOCAL not supported
 * BGP4MP_MESSAGE_LOCAL_AS4 not supported
-* all previous named codes in the *_AP version are not supported
+* all previous named codes in the *_ADDPATH versions are not supported
 
 This is great work but needs a code review / polishing and test cases.

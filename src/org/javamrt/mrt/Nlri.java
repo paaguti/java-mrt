@@ -6,17 +6,12 @@
 
 package org.javamrt.mrt;
 
-import java.net.InetAddress;
-
 import org.javamrt.utils.RecordAccess;
 
 //IPv4/IPv6 address and mask length extractor from NLRI field in BGP
 
 public class Nlri extends Prefix
 {
-	// from Prefix.java
-	//   byte[] addr;
-	//   int    maskLength;
 	private int bytes;
 	protected long pathId = -1;
 
@@ -68,7 +63,8 @@ public class Nlri extends Prefix
 		return (Prefix)this;
 	}
 	
-	public String toString() {
+	public String toString()
+	{
 		String string = super.toString();
 		if (pathId != -1) string.concat(":").concat(Long.toString(pathId));
 		return string;

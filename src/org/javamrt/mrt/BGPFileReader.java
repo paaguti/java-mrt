@@ -236,14 +236,14 @@ public class BGPFileReader {
 					break;
 				case MRTConstants.RIB_IPV4_MULTICAST:
 				case MRTConstants.RIB_IPV6_MULTICAST:
-				case MRTConstants.RIB_IPV4_MULTICAST_AP:
-				case MRTConstants.RIB_IPV6_MULTICAST_AP:
+				case MRTConstants.RIB_IPV4_MULTICAST_ADDPATH:
+				case MRTConstants.RIB_IPV6_MULTICAST_ADDPATH:
 					parseTableDumpv2Multicast();
 					break;
-				case MRTConstants.RIB_IPV4_UNICAST_AP:
+				case MRTConstants.RIB_IPV4_UNICAST_ADDPATH:
 					parseTableDumpv2(MRTConstants.AFI_IPv4, true);
 					break;
-				case MRTConstants.RIB_IPV6_UNICAST_AP:
+				case MRTConstants.RIB_IPV6_UNICAST_ADDPATH:
 					parseTableDumpv2(MRTConstants.AFI_IPv6, true);
 				break;
 				case MRTConstants.RIB_GENERIC_AP:
@@ -287,7 +287,7 @@ public class BGPFileReader {
 		case MRTConstants.BGP4MP_MESSAGE_AS4:
 			return parseBgp4Update(subtype, false);
 		case MRTConstants.BGP4MP_MESSAGE_AP:
-		case MRTConstants.BGP4MP_MESSAGE_AS4_AP:
+		case MRTConstants.BGP4MP_MESSAGE_AS4_ADDPATH:
 			return parseBgp4Update(subtype, true);
 			/*
 			 * TODO
