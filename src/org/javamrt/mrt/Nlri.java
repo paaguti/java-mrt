@@ -79,4 +79,9 @@ public class Nlri extends Prefix
 		offset += this.bytes + 1;
 		return offset;
 	}
+	
+	public long getPathId()
+	{
+		return pathId;
+	}
 }
