@@ -9,9 +9,7 @@ package org.javamrt.mrt;
 import java.net.InetAddress;
 import java.util.Comparator;
 
-public class Bgp4Update
-	extends MRTRecord
-	implements Comparable<Bgp4Update>, Comparator<Bgp4Update>
+public class Bgp4Update extends MRTRecord implements Comparable<Bgp4Update>, Comparator<Bgp4Update>
 {
 	protected char updateType = '?';
 	protected String updateStr = "BGP4MP";

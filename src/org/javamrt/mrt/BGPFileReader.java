@@ -703,7 +703,7 @@ public class BGPFileReader {
 
 	private void parseGenericRib() throws BGPFileReaderException{
 		// TODO: implement
-		throw new BGPFileReaderException("TODO : parseGenericRib",new byte[1]);
+		throw new BGPFileReaderException("TODO : parseGenericRib", new byte[1]);
 	}
 
 	private void parseTableDumpv2Multicast() throws BGPFileReaderException {

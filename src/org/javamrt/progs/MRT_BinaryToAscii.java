@@ -113,9 +113,9 @@ public class MRT_BinaryToAscii {
 			try {
 				in = new BGPFileReader(args[arg]);
 				while (false == in.eof()) {
-				try {
-					if ((record = in.readNext()) == null)
-						break;
+					try {
+						if ((record = in.readNext()) == null)
+							break;
 						if (record instanceof Open
 								|| record instanceof KeepAlive
 								|| record instanceof Notification)
@@ -146,6 +146,8 @@ public class MRT_BinaryToAscii {
 							}
 							System.out.println(record);
 						}
+						if (record != null) record = null;
+						System.gc();
 					} catch (RFC4893Exception rfce) {
 						if (printRFC4893violations)
 							System.err.println(rfce.toString());
