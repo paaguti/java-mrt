@@ -28,8 +28,4 @@ atlassian-ide-plugin.xml
 .settings
 .DS_Store
 
-
-
-
-
-
+*.swp
