@@ -245,6 +245,14 @@ public class Attributes {
 					Debug.println("ATTR_SET");
 				break;
 
+                        case MRTConstants.LARGE_COMMUNITY:
+                                // Unsupported attribute, ignoring.
+                                // See draft-ietf-idr-large-community.
+                                if (Debug.compileDebug) {
+                                    Debug.println("LARGE_COMMUNITY");
+                                }
+                                break;
+
 			default:
 				throw new AttributeException(type);
 			}

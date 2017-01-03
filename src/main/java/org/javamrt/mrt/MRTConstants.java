@@ -55,6 +55,7 @@ public class MRTConstants {
 	public static final byte EXT_COMMUNITIES = 16;
 	public static final byte AS4_PATH = 17;
 	public static final byte AS4_AGGREGATOR = 18;
+	public static final byte LARGE_COMMUNITY = 32;
 	public static final int  ATTR_SET = 128;
 
 	public static final int ATTRIBUTE_AS_PATH = 0;
