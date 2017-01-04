@@ -245,6 +245,11 @@ public class Attributes {
 					Debug.println("ATTR_SET");
 				break;
 
+                        case MRTConstants.LARGE_COMMUNITY:
+                                Attribute largeCommunity = new LargeCommunity(buffer);
+                                attributes.set(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY, largeCommunity);
+                                break;
+
 			default:
 				throw new AttributeException(type);
 			}
@@ -291,6 +296,11 @@ public class Attributes {
 		if (result != null)
 			return result;
 		return Community.empty();
+	}
+
+	public LargeCommunity getLargeCommunity() {
+		return (LargeCommunity)
+                    attributes.elementAt(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY);
 	}
 
 	public Med getMed() {
