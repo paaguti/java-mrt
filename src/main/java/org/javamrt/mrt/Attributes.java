@@ -246,11 +246,8 @@ public class Attributes {
 				break;
 
                         case MRTConstants.LARGE_COMMUNITY:
-                                // Unsupported attribute, ignoring.
-                                // See draft-ietf-idr-large-community.
-                                if (Debug.compileDebug) {
-                                    Debug.println("LARGE_COMMUNITY");
-                                }
+                                Attribute largeCommunity = new LargeCommunity(buffer);
+                                attributes.set(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY, largeCommunity);
                                 break;
 
 			default:
@@ -299,6 +296,11 @@ public class Attributes {
 		if (result != null)
 			return result;
 		return Community.empty();
+	}
+
+	public LargeCommunity getLargeCommunity() {
+		return (LargeCommunity)
+                    attributes.elementAt(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY);
 	}
 
 	public Med getMed() {
