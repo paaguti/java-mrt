@@ -10,7 +10,7 @@ This library is released under LGPL license. Read LICENSE.txt.
 
 Based on:
 * RFC 6396
-* draft-petrie-grow-mrt-add-paths-00
+* RFC 8050
 
 Limitations:
 * RIB_IPv4_Multicast not supported
