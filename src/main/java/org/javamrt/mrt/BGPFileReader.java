@@ -201,7 +201,7 @@ public class BGPFileReader {
 			if (bytesRead != this.record.length) {
 				this.eof = true;
 				throw new BGPFileReaderException("Truncated file: " + bytesRead
-						+ " instead of " + this.record.length + " bytes",record);
+						+ " instead of " + this.record.length + " bytes", header);
 			}
 
 			/*
@@ -657,7 +657,7 @@ public class BGPFileReader {
 		if (recordFifo.isEmpty()) {
 			if (Debug.compileDebug)
 				if (Debug.doDebug)
-					throw new BGPFileReaderException("recordFifo empty!", record);
+					throw new BGPFileReaderException("recordFifo empty!", header);
 			return null;
 		}
 		return recordFifo.remove();
