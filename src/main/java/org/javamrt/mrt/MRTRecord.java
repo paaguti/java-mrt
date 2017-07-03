@@ -27,6 +27,10 @@ public class MRTRecord {
 		return result;
 	}
 
+	public byte[] getBody(){
+		return body;
+	}
+
 	public long getTime() {
 		return RecordAccess.getU32(header, 0);
 	}
