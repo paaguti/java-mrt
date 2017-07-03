@@ -20,18 +20,18 @@ public class Bgp4Update
 	protected Prefix prefix = null;
 	protected Attributes updateAttr = null;
 
-	public Bgp4Update(byte[] header, InetAddress peerIP, AS peerAS,
+	public Bgp4Update(byte[] header, byte[] record, InetAddress peerIP, AS peerAS,
 			Prefix prefix, Attributes updateAttr) {
-		super(header);
+		super(header, record);
 		this.peerIP = peerIP;
 		this.peerAS = peerAS;
 		this.prefix = prefix;
 		this.updateAttr = updateAttr;
 	}
 
-	public Bgp4Update(byte[] header, InetAddress peerIP, AS peerAS,
+	public Bgp4Update(byte[] header, byte[] record, InetAddress peerIP, AS peerAS,
 			Prefix prefix) {
-		super(header);
+		super(header, record);
 		this.peerIP = peerIP;
 		this.peerAS = peerAS;
 		this.prefix = prefix;
@@ -41,15 +41,18 @@ public class Bgp4Update
 	public String toString() {
 		String peerString = MRTConstants.ipAddressString(this.peerIP);
 
-		String result = this.updateStr + "|" + this.time + "|"
-				+ // this comes from MRTRecord
-				this.updateType + "|" + peerString + "|"
-				+ this.peerAS + "|" + this.prefix.toString();
+		StringBuilder result = new StringBuilder(this.updateStr).append('|')
+				.append(getTime()).append('|')
+				// this comes from MRTRecord
+				.append(this.updateType).append('|')
+				.append(peerString).append('|')
+				.append(this.peerAS).append('|')
+				.append(this.prefix.toString());
 
 		if (this.updateAttr != null)
-			result += '|' + this.updateAttr.toString();
+			result.append('|').append(this.updateAttr.toString());
 
-		return result;
+		return result.toString();
 	}
 
 	/*
@@ -108,14 +111,11 @@ public class Bgp4Update
 			result = org.javamrt.utils.InetAddressComparator.compara(this.peerIP,
 					other.peerIP);
 			if (result == 0) {
-				if (this.time < other.time)
-					result = -1;
-				else if (this.time > other.time)
-					result = 1;
+				result = Long.valueOf(this.getTime()).compareTo(other.getTime());
 /*
  *  Ignore sorting by update type
  *
- * 				else {
+ * 				if (result == 0) {
 					if (this.updateType > other.updateType)
 						result = 1;
 					else if (this.updateType < other.updateType)
@@ -145,7 +145,7 @@ public class Bgp4Update
 	 */
 	public boolean equals(Bgp4Update o) {
 		if (this.updateType == ((Bgp4Update)o).updateType
-			&& this.time == ((Bgp4Update)o).time
+			&& this.getTime() == ((Bgp4Update)o).getTime()
 			&& this.peerIP.equals(((Bgp4Update)o).peerIP)
 			&& this.prefix.equals(((Bgp4Update)o).prefix)) {
 				// Advertisements => compare Attributes

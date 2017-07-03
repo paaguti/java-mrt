@@ -11,11 +11,12 @@ import java.net.InetAddress;
 public class Withdraw extends Bgp4Update
 {
 	public Withdraw(byte[] header,
+                    byte[] record,
 					InetAddress peerIP,
-					AS peerAS,
-					Prefix prefix)
+                    AS peerAS,
+                    Prefix prefix)
 	{
-		super(header, peerIP, peerAS, prefix);
+		super(header, record, peerIP, peerAS, prefix);
 		this.updateType = 'W';
 	}
 

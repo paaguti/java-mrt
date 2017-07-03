@@ -24,7 +24,9 @@ public class TableDumpv2
 	      long          origTime,
 	      InetAddress   peer,
 	      AS            peerAs,
-	      Attributes    attributes)
+	      Attributes    attributes,
+		  byte[] header,
+		  byte[] body)
   {
     super(view,
 	  sequence,
@@ -32,7 +34,9 @@ public class TableDumpv2
 	  origTime,
 	  peer,
 	  peerAs,
-	  attributes);
+	  attributes,
+	  header,
+	  body);
     this.type = "TABLE_DUMP2";
   }
 

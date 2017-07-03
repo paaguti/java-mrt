@@ -6,52 +6,44 @@
 
 package org.javamrt.mrt;
 
-import java.net.InetAddress;
-
 import org.javamrt.utils.RecordAccess;
+
+import java.net.InetAddress;
+import java.util.Arrays;
 
 
 public class MRTRecord {
-	protected byte[] record;
-	protected int type;
-	protected int subtype;
-	protected long time;
+	protected byte[] header;
+	protected byte[] body;
 
-	public MRTRecord() {
+	protected MRTRecord(byte[] header, byte[] body) {
+		this.header = header;
+		this.body = body;
 	}
 
-	protected MRTRecord(byte[] header) {
-		setHeaderData(header);
-	}
-
-	public void setGeneric(byte[] header, byte[] record) {
-		setHeaderData(header);
-		this.record = record;
-	}
-
-	public void setHeaderData(byte[] header) {
-		this.time = RecordAccess.getU32(header, 0);
-		this.type = RecordAccess.getU16(header, 4);
-		this.subtype = RecordAccess.getU16(header, 6);
+	public byte[] getBytes() {
+		byte[] result = Arrays.copyOf(header, header.length + body.length);
+		System.arraycopy(body, 0, result, header.length, body.length);
+		return result;
 	}
 
 	public long getTime() {
-		return this.time;
+		return RecordAccess.getU32(header, 0);
 	}
 
 	public int getType() {
-		return this.type;
+		return RecordAccess.getU16(header, 4);
 	}
 
 	public long getSubType() {
-		return this.subtype;
+		return RecordAccess.getU16(header, 6);
 	}
 
 	// will be overriden by derived classes
 
 	public String toString() {
 		return String
-				.format("MRT|%d|%d|%d", this.time, this.type, this.subtype);
+				.format("MRT|%d|%d|%d", getTime(), getType(), getSubType());
 	}
 
 	public boolean hasAsPathPrepend() {

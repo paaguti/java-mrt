@@ -147,7 +147,6 @@ public class BGPFileReader {
 	 * @throws Exception
 	 */
 	public MRTRecord readNext() throws Exception {
-		MRTRecord result = null;
 		while (true) {
 			/*
 			 * Consume any records waiting in the queue
@@ -208,43 +207,43 @@ public class BGPFileReader {
 			 * Record parsing
 			 */
 			switch (type) {
-			case MRTConstants.TABLE_DUMP:
-				return parseTableDump(subtype);
+				case MRTConstants.TABLE_DUMP:
+					return parseTableDump(subtype);
 
-			case MRTConstants.TABLE_DUMP_v2:
+				case MRTConstants.TABLE_DUMP_v2:
 
-				switch (subtype) {
-				case MRTConstants.PEER_INDEX_TABLE:
-					parsePeerIndexTable();
+					switch (subtype) {
+						case MRTConstants.PEER_INDEX_TABLE:
+							parsePeerIndexTable();
+							break;
+						case 2:
+							parseTableDumpv2(MRTConstants.AFI_IPv4);
+							break;
+						case 4:
+							parseTableDumpv2(MRTConstants.AFI_IPv6);
+							break;
+						case 6:
+							parseGenericRib();
+							break;
+						case 3:
+						case 5:
+							parseTableDumpv2Multicast();
+							break;
+						default:
+							throw new BGPFileReaderException(
+									"Unknown TABLE_DUMP_V2 subtype" + subtype, header);
+					}
 					break;
-				case 2:
-					parseTableDumpv2(MRTConstants.AFI_IPv4);
+
+				case MRTConstants.BGP4MP:
+					MRTRecord bgp4mp = parseBgp4mp(subtype);
+					if ((bgp4mp) != null) {
+						return bgp4mp;
+					}
 					break;
-				case 4:
-					parseTableDumpv2(MRTConstants.AFI_IPv6);
-					break;
-				case 6:
-					parseGenericRib();
-					break;
-				case 3:
-				case 5:
-					parseTableDumpv2Multicast();
-					break;
+
 				default:
-					throw new BGPFileReaderException(
-							"Unknown TABLE_DUMP_V2 subtype" + subtype, header);
-				}
-				break;
-
-			case MRTConstants.BGP4MP:
-				if ((result = parseBgp4mp(subtype)) != null)
-					return result;
-				break;
-
-			default:
-				result = new MRTRecord();
-				result.setGeneric(header, record);
-				return result;
+					return new MRTRecord(header, record);
 			}
 		}
 	}
@@ -318,10 +317,14 @@ public class BGPFileReader {
 			stateOffs += 2;
 			int newState = RecordAccess.getU16(record, stateOffs);
 
-			return new StateChange(RecordAccess.getU32(header, 0), InetAddress
-					.getByAddress(RecordAccess.getBytes(record, addrOffs,
-							addrSize)), new AS(RecordAccess.getU16(record, 0)),
-					oldState, newState);
+			return new StateChange(
+					RecordAccess.getU32(header, 0),
+					InetAddress.getByAddress(RecordAccess.getBytes(record, addrOffs, addrSize)),
+					new AS(RecordAccess.getU16(record, 0)),
+					oldState,
+					newState,
+					header,
+					record);
 
 		}
 
@@ -354,10 +357,14 @@ public class BGPFileReader {
 			stateOffs += 2;
 			int newState = RecordAccess.getU16(record, stateOffs);
 
-			return new StateChange(RecordAccess.getU32(header, 0), InetAddress
-					.getByAddress(RecordAccess.getBytes(record, addrOffs,
-							addrSize)), new AS(RecordAccess.getU32(record, 0)),
-					oldState, newState);
+			return new StateChange(
+					RecordAccess.getU32(header, 0),
+					InetAddress.getByAddress(RecordAccess.getBytes(record, addrOffs, addrSize)),
+					new AS(RecordAccess.getU32(record, 0)),
+					oldState,
+					newState,
+					header,
+					record);
 
 		}
 
@@ -365,9 +372,7 @@ public class BGPFileReader {
 			break;
 		}
 
-		MRTRecord result = new MRTRecord();
-		result.setGeneric(header, record);
-		return result;
+		return new MRTRecord(header, record);
 	}
 
 	private void parsePeerIndexTable() throws Exception {
@@ -503,10 +508,16 @@ public class BGPFileReader {
 			offset += attrLen;
 
 
-			recordFifo.add(new TableDumpv2(1, // int view,
-					(int) (sequenceNo & 0xffff), nlri, time, peerIP[peerIndex], // InetAddress
-																				// peer,
-					peerAS[peerIndex], attributes));
+			recordFifo.add(new TableDumpv2(
+					1, // int view,
+					(int) (sequenceNo & 0xffff),
+					nlri,
+					time,
+					peerIP[peerIndex], // InetAddr
+					peerAS[peerIndex],
+					attributes,
+					header,
+					record));
 		}
 	}
 
@@ -585,7 +596,7 @@ public class BGPFileReader {
 			i += wNlri.getOffset();
 
 			recordFifo
-					.add(new Withdraw(header, srcIP, srcAs, wNlri.toPrefix()));
+					.add(new Withdraw(header, record, srcIP, srcAs, wNlri.toPrefix()));
 		}
 
 		int attrLen = RecordAccess.getU16(record, offset);
@@ -616,8 +627,7 @@ public class BGPFileReader {
 
 			if (mpUnreach != null) {
 				for (Nlri mpu : mpUnreach.getNlri()) {
-					recordFifo.add(new Withdraw(header, srcIP, srcAs, mpu
-							.toPrefix()));
+					recordFifo.add(new Withdraw(header, record, srcIP, srcAs, mpu.toPrefix()));
 				}
 			}
 
@@ -627,7 +637,7 @@ public class BGPFileReader {
 			if (mpReach != null) {
 				if (Debug.compileDebug) Debug.printf("Has MP_REACH (%s)\n",mpReach.getNlri());
 				for (Nlri mpu : mpReach.getNlri()) {
-					recordFifo.add(new Advertisement(header, srcIP, srcAs, mpu
+					recordFifo.add(new Advertisement(header, record, srcIP, srcAs, mpu
 							.toPrefix(), attributes));
 				}
 			}
@@ -650,8 +660,8 @@ public class BGPFileReader {
 				Nlri aNlri = new Nlri(record, offset, afi);
 				offset += aNlri.getOffset();
 
-				recordFifo.add(new Advertisement(header, srcIP, srcAs, aNlri
-						.toPrefix(), attributes));
+				recordFifo.add(new Advertisement(header, record, srcIP, srcAs,
+												 aNlri.toPrefix(), attributes));
 			}
 		}
 		if (recordFifo.isEmpty()) {
@@ -705,7 +715,7 @@ public class BGPFileReader {
 			neighborAS = aspath.get(0);
 
 		return new TableDumpv2(view, 1, prefix, rtime, nextHop, neighborAS,
-				attrs);
+				attrs, header, record);
 	}
 
 	private void parseGenericRib() throws BGPFileReaderException{

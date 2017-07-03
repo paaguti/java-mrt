@@ -12,12 +12,14 @@ public class StateChange
 {
 
     public StateChange(
-	long 		time,
-	InetAddress 	gatewayIP,
-	AS          	gatewayAS,
-	int 		old_state,
-	int 		new_state)
+            long time,
+            InetAddress gatewayIP,
+            AS gatewayAS,
+            int old_state,
+            int new_state,
+            byte[] header, byte[] record)
     {
+        super(header, record);
       // route_btoa.System_err_println("State Change");
       this.time = time;
       this.gatewayIP = gatewayIP;

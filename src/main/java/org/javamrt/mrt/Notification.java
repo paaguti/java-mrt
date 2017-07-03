@@ -11,7 +11,7 @@ public class Notification
 {
   public Notification (byte[]header, byte[]record)
   {
-    super(header);
+    super(header, record);
   }
 
   public String toString ()

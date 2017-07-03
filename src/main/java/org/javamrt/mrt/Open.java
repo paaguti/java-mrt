@@ -13,7 +13,7 @@ public class Open
 {
   Open (byte[]header, byte[]record)
   {
-    super (header);
+    super (header, record);
 
     if (Debug.compileDebug) {
     	Debug.println("Open message");

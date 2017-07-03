@@ -6,12 +6,16 @@
 
 package org.javamrt.mrt;
 
-import java.net.InetAddress;
-import java.util.Vector;
 import org.javamrt.utils.Debug;
 import org.javamrt.utils.RecordAccess;
 
+import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Vector;
+
 public class Attributes {
+
+	private final byte[] bytes;
 
 	public Attributes(byte[] record, int attrLen, int attrPos, int attrBytes)
 			throws Exception {
@@ -19,11 +23,15 @@ public class Attributes {
 			throw new AttributeException(String.format(
 					"Attributes needs attrBytes 2 or 4 (not %d", attrBytes));
 		decode(record, attrLen, attrPos, attrBytes);
+		bytes = Arrays.copyOfRange(record, attrPos, attrPos + attrLen);
 	}
 
 	public Attributes(byte[] record, int attrLen, int attrPos) throws Exception {
 		decode(record, attrLen, attrPos, 2);
+		bytes = Arrays.copyOfRange(record, attrPos, attrPos + attrLen);
 	}
+
+	public byte[] getBytes() { return bytes; }
 
 	private void decode(byte[] record, int attrLen, int attrPos, int attrBytes)
 			throws Exception {

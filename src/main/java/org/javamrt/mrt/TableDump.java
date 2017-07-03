@@ -25,8 +25,11 @@ protected TableDump(int           view,
 	    long          origTime,
 	    InetAddress   peer,
 	    AS            peerAs,
-	    Attributes    attributes)
+	    Attributes    attributes,
+        byte[] header,
+        byte[] body)
   {
+    super(header, body);
     if (false)
     route_btoa.System_err_println(String.format("TableDump(int    view     =%d\n" +
                     "   int           sequence = %d\n" +
@@ -58,7 +61,7 @@ protected TableDump(int           view,
   TableDump (byte[]cabecera, byte[]record,int subtype)
     throws Exception
   {
-    super(cabecera);
+    super(cabecera, record);
 
     int decodeOffset = 0;
     int addrSize     = (subtype == MRTConstants.AFI_IPv4) ? 4 : 16;

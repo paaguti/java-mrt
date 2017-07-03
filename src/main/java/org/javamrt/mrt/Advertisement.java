@@ -12,13 +12,15 @@ public class Advertisement
 {
 
 public
-    Advertisement(byte[]      header,
-		  InetAddress peerIP,
-		  AS          peerAS,
-		  Prefix      prefix,
-		  Attributes  updateAttr)
+    Advertisement(byte[] header,
+                  byte[] record,
+                  InetAddress peerIP,
+                  AS peerAS,
+                  Prefix prefix,
+                  Attributes updateAttr)
   {
     super(header,
+	  record,
 	  peerIP,
 	  peerAS,
 	  prefix,
