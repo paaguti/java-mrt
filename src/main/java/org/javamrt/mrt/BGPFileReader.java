@@ -203,6 +203,8 @@ public class BGPFileReader {
 						+ " instead of " + this.record.length + " bytes", header);
 			}
 
+			if (Debug.compileDebug)
+				Debug.dump(this.record);
 			/*
 			 * Record parsing
 			 */
@@ -532,7 +534,7 @@ public class BGPFileReader {
 		int iface = RecordAccess.getU16(record, offset); offset += 2;
 		int afi = RecordAccess.getU16(record, offset); offset += 2;
 //		int offset = 2 * asSize + 4;
-		int addrSize = (afi == MRTConstants.AFI_IPv4) ? 4 : 16;
+		int addrSize = (afi == MRTConstants.AFI_IPv6) ? 16 : 4;
 
 		InetAddress srcIP = InetAddress.getByAddress(RecordAccess.getBytes(
 				record, offset, addrSize));
