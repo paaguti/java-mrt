@@ -247,19 +247,14 @@ public class Attributes {
 				this.hasASPATHLimit = true;
 				break;
 
-			case MRTConstants.ATTR_SET:
-				// unsupported attribute. ignoring
-				if (Debug.compileDebug)
-					Debug.println("ATTR_SET");
-				break;
-
                         case MRTConstants.LARGE_COMMUNITY:
                                 Attribute largeCommunity = new LargeCommunity(buffer);
                                 attributes.set(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY, largeCommunity);
                                 break;
 
-			default:
-				throw new AttributeException(type);
+				default:
+					attributes.set(type, new UnsupportedAttribute(type, buffer));
+					break;
 			}
 		}
 	}

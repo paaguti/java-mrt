@@ -79,7 +79,7 @@ public class MRTConstants {
 	public static final int ATTRIBUTE_CONNECTOR = 20;
 	public static final int ATTRIBUTE_ASPATHLIMIT = 21;
 	public static final int ATTRIBUTE_LARGE_COMMUNITY = 22;
-	public static final int ATTRIBUTE_TOTAL = 23;
+	public static final int ATTRIBUTE_TOTAL = 256;
 
 	public static final int AFI_IPv4 = 1;
 	public static final int AFI_IPv6 = 2;
