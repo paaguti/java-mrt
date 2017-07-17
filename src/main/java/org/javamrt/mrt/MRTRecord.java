@@ -27,14 +27,6 @@ public class MRTRecord {
 		return result;
 	}
 
-	public byte[] getBody(){
-		return body;
-	}
-
-	public byte[] getHeader(){
-		return header;
-	}
-
 	public long getTime() {
 		return RecordAccess.getU32(header, 0);
 	}

@@ -569,10 +569,12 @@ public class BGPFileReader {
 			return new KeepAlive(header, record);
 
 		case MRTConstants.BGP4MSG_OPEN:
-			return new Open(header, record);
+			int offsetForOpen = offset+5;
+			long bgpId = RecordAccess.getU32(record, offsetForOpen);
+			return new Open(header, record, srcIP, srcAs, bgpId);
 
 		case MRTConstants.BGP4MSG_NOTIFICATION:
-			return new Notification(header, record);
+			return new Notification(header, record, srcIP, srcAs);
 
 		case MRTConstants.BGP4MSG_UPDATE:
 			break; // to continue after case()

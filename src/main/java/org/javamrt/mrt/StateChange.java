@@ -35,6 +35,13 @@ public class StateChange
     }
 
     private InetAddress gatewayIP;
+
+    public InetAddress getPeer()
+    {
+        return this.gatewayIP;
+    }
+
+    @Deprecated
     public InetAddress 	getPeerIP()
     {
 	return this.gatewayIP;
