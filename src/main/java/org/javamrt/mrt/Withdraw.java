@@ -14,9 +14,10 @@ public class Withdraw extends Bgp4Update
                     byte[] record,
 					InetAddress peerIP,
                     AS peerAS,
-                    Prefix prefix)
+                    Prefix prefix,
+					String updateStr)
 	{
-		super(header, record, peerIP, peerAS, prefix);
+		super(header, record, peerIP, peerAS, prefix, updateStr);
 		this.updateType = 'W';
 	}
 

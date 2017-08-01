@@ -114,6 +114,14 @@ public class MRTConstants {
 	public static final int BGP4MSG_KEEPALIVE = 4;
 	public static final int BGP4MSG_REFRESH = 5;
 
+	public static final int BGPDUMP_TYPE_MRTD_BGP = 5;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_UPDATE= 1;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_STATE_CHANGE = 3;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_KEEPALIVE = 7;
+
+	public static final String UPDATE_STR_BGP4MP = "BGP4MP";
+	public static final String UPDATE_STR_BGP = "BGP";
+
 	public static final String mpSubType(int s) {
 		switch (s) {
 		case BGP4MP_STATE_CHANGE:

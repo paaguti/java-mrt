@@ -17,6 +17,7 @@ public class StateChange
             AS gatewayAS,
             int old_state,
             int new_state,
+            String updateStr,
             byte[] header, byte[] record)
     {
         super(header, record);
@@ -26,6 +27,7 @@ public class StateChange
       this.gatewayAS = gatewayAS;
       this.old_state = old_state;
       this.new_state = new_state;
+      this.updateStr = updateStr;
     }
 
     private long time;
@@ -65,10 +67,12 @@ public class StateChange
 	return this.new_state;
     }
 
+    private String updateStr = "";
 
     public String toString()
     {
-	return String.format("BGP4MP|%d|STATE|%s|%s|%d|%d",
+	return String.format("%s|%d|STATE|%s|%s|%d|%d",
+                 this.updateStr,
 			     this.time,
 			     this.gatewayIP.getHostAddress(),
 			     this.gatewayAS.toString(),

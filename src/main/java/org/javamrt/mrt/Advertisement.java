@@ -17,18 +17,17 @@ public
                   InetAddress peerIP,
                   AS peerAS,
                   Prefix prefix,
-                  Attributes updateAttr)
+                  Attributes updateAttr,
+                  String updateStr)
   {
     super(header,
 	  record,
 	  peerIP,
 	  peerAS,
 	  prefix,
-	  updateAttr);
+	  updateAttr,
+      updateStr);
     this.updateType = 'A';
-    //
-    //    this.updateStr  = updateStr;
-    //
   }
 
 @Override

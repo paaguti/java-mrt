@@ -14,28 +14,30 @@ public class Bgp4Update
 	implements Comparable<Bgp4Update>, Comparator<Bgp4Update>
 {
 	protected char updateType = '?';
-	protected String updateStr = "BGP4MP";
+	protected String updateStr = "";
 	protected InetAddress peerIP = null;
 	protected AS peerAS = new AS(0);
 	protected Prefix prefix = null;
 	protected Attributes updateAttr = null;
 
 	public Bgp4Update(byte[] header, byte[] record, InetAddress peerIP, AS peerAS,
-			Prefix prefix, Attributes updateAttr) {
+			Prefix prefix, Attributes updateAttr, String updateStr) {
 		super(header, record);
 		this.peerIP = peerIP;
 		this.peerAS = peerAS;
 		this.prefix = prefix;
 		this.updateAttr = updateAttr;
+		this.updateStr = updateStr;
 	}
 
 	public Bgp4Update(byte[] header, byte[] record, InetAddress peerIP, AS peerAS,
-			Prefix prefix) {
+			Prefix prefix, String updateStr) {
 		super(header, record);
 		this.peerIP = peerIP;
 		this.peerAS = peerAS;
 		this.prefix = prefix;
 		this.updateAttr = null;
+		this.updateStr = updateStr;
 	}
 
 	public String toString() {
