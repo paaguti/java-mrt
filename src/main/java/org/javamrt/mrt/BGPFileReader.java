@@ -730,8 +730,10 @@ public class BGPFileReader {
 		offset += 2;
 		if (Debug.compileDebug) Debug.printf("int unfeasibleLen = %d\n",unfeasibleLen);
 
+
 		for (int i = 0; i < unfeasibleLen;) {
-			Nlri wNlri = new Nlri(record, offset, afi);
+			//The withdraws out of the Attributs are going to be always ipv4
+			Nlri wNlri = new Nlri(record, offset, 1);
 			offset += wNlri.getOffset();
 			i += wNlri.getOffset();
 
@@ -798,7 +800,8 @@ public class BGPFileReader {
 
 			if (Debug.compileDebug) Debug.debug("offset(%d) record.length (%d)\n",offset,record.length);
 			while (offset < record.length) {
-				Nlri aNlri = new Nlri(record, offset, afi);
+				//The announcements out of the Attributs are going to be always ipv4
+				Nlri aNlri = new Nlri(record, offset, 1);
 				offset += aNlri.getOffset();
 
 				recordFifo.add(new Advertisement(header, record, srcIP, srcAs,
