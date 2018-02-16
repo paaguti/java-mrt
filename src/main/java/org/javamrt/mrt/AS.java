@@ -139,8 +139,13 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	public String toString() {
 		if (this.equals(0))        return "AS_NULL";
 		if (this.equals(AS_TRANS)) return "AS_TRANS";
-		if (this.is4Byte())        return String.format("%d",(hiWord()<<16) + loWord());
-		return String.format("%d", loWord());
+
+		if (this.is4Byte())        return String.format("%d",unsignedToLong((hiWord()<<16) + loWord()));
+		return String.format("%d", unsignedToLong(loWord()));
+	}
+
+	public static long unsignedToLong(int address) {
+		return address & 0xffffffffL;
 	}
 
 	private int hiWord() {

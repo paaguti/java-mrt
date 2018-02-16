@@ -30,9 +30,9 @@ public class ASPath implements Attribute {
 		this.prependers = null;
 	}
 
-	ASPath(byte[] buffer) throws Exception {
-		decode(buffer, 2);
-	}
+//	ASPath(byte[] buffer) throws Exception {
+//		decode(buffer, 2);
+//	}
 
 	ASPath(byte[] buffer, int asSize) throws Exception {
 		decode(buffer, asSize);
