@@ -71,13 +71,12 @@ public class StateChange
 
     public String toString()
     {
-	return String.format("%s|%d|STATE|%s|%s|%d|%d",
+ 	return String.format("%s|%d|STATE|%s|%s|%d|%d",
                  this.updateStr,
 			     this.time,
-			     this.gatewayIP.getHostAddress(),
+			     MRTConstants.ipAddressString(gatewayIP),
 			     this.gatewayAS.toString(),
 			     this.old_state,
-			     this.new_state).replaceAll("(:0)+:0{0,1}","::");
-
+			     this.new_state);
     }
 }

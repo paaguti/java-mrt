@@ -275,9 +275,15 @@ public class Attributes {
 		toStr = new String();
 
 		for (int i = MRTConstants.ATTRIBUTE_AS_PATH; i <= MRTConstants.ATTRIBUTE_AGGREGATOR; i++) {
-			if (attributes.elementAt(i) != null)
+			if (attributes.elementAt(i) != null) {
+				if (i == MRTConstants.ATTRIBUTE_NEXT_HOP) {
+					if (attributes.elementAt(MRTConstants.ATTRIBUTE_MP_REACH) != null) {
+						toStr = toStr.concat(attributes.elementAt(MRTConstants.ATTRIBUTE_MP_REACH).toString()).concat("|");
+						continue;
+					}
+				}
 				toStr = toStr.concat(attributes.elementAt(i).toString());
-			else {
+			} else {
 				if (i == MRTConstants.ATTRIBUTE_LOCAL_PREF
 						|| i == MRTConstants.ATTRIBUTE_MULTI_EXIT)
 					toStr = toStr.concat("0");

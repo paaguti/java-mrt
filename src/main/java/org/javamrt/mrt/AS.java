@@ -140,7 +140,8 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 		if (this.equals(0))        return "AS_NULL";
 		if (this.equals(AS_TRANS)) return "AS_TRANS";
 
-		if (this.is4Byte())        return String.format("%d",unsignedToLong((hiWord()<<16) + loWord()));
+		if (this.is4Byte())
+			return String.format("%d",unsignedToLong((hiWord()<<16) + loWord()));
 		return String.format("%d", unsignedToLong(loWord()));
 	}
 

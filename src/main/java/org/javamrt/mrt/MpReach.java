@@ -6,6 +6,7 @@
 
 package org.javamrt.mrt;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.Vector;
 
@@ -20,6 +21,7 @@ public class MpReach implements Attribute {
 	private int afi;
 	private int safi;
 	private InetAddress nextHop;
+	private boolean isInIpv4EmbeddedIpv6Format = false;
 	private Vector<Nlri> nlriVector;
 
 	// private int snpaNo;
@@ -77,7 +79,13 @@ public class MpReach implements Attribute {
 		}
 
 		byte[] abuf = RecordAccess.getBytes(buffer,offset, nhl);
+
 		nextHop = InetAddress.getByAddress(abuf);
+
+		if(nextHop instanceof Inet4Address && afi == 2){
+			isInIpv4EmbeddedIpv6Format = true;
+		}
+
 		offset += nextHopLen;
 
 		/**
@@ -145,9 +153,16 @@ public class MpReach implements Attribute {
 	 * public Vector < InetAddress > getSNPA () { return snpaVector; }
 	 */
 	public String toString() {
-		String result = "NEXT HOP: " + nextHop.getHostAddress();
-		for (Nlri nlri : nlriVector)
-			result += "\n NRLI:" + nlri.toString();
+		String result = "";
+		String nextHopString = MRTConstants.ipAddressString(nextHop);
+		if(isInIpv4EmbeddedIpv6Format){
+			result = "::ffff:"+nextHopString;
+		} else {
+			result = nextHopString;
+		}
+//		String result = "NEXT HOP: " + nextHop.getHostAddress();
+//		for (Nlri nlri : nlriVector)
+//			result += "\n NLRI:" + nlri.toString();
 		return result;
 	}
 }

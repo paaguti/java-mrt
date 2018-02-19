@@ -6,6 +6,8 @@
 
 package org.javamrt.mrt;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 
@@ -181,9 +183,9 @@ public class MRTConstants {
 	protected static final String ipAddressString(InetAddress ia)
 	{
 		return ia.getHostAddress().
-			// replaceFirst("^[^/]*/", "").
-			replaceFirst(":0(:0)+","::").
-			replaceFirst("^0:","").
-			replaceFirst(":::", "::");
+				// replaceFirst("^[^/]*/", "").
+						replaceFirst(":0(:0)+", "::").
+						replaceFirst("^0:", "").
+						replaceFirst(":::", "::");
 	}
 }
