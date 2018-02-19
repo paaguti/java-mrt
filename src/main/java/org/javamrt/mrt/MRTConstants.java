@@ -6,8 +6,6 @@
 
 package org.javamrt.mrt;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 
