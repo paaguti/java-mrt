@@ -123,8 +123,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	public void setMaskLength(int maskLength)
 	    throws PrefixMaskException, UnknownHostException {
 	    byte[] temp= new byte[this.base.length];
-	    for (int i=0;i<this.base.length;i++)
-		temp[i] = base[i];
+	    System.arraycopy(base, 0, temp, 0, base.length);
 	    setPrefix(temp,maskLength);
 	}
 
