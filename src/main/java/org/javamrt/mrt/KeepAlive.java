@@ -10,7 +10,7 @@ public class KeepAlive extends MRTRecord
 {
   KeepAlive (byte[]header, byte[]record)
   {
-    super (header);
+    super (header, record);
   }
 
   public String toString ()

@@ -13,27 +13,27 @@ import org.javamrt.utils.RecordAccess;
 
 public class genericRib extends MRTRecord
 {
-  public genericRib ()
+  public genericRib(byte[] header, byte[] body)
   {
-    super ();
+    super(header, body);
 
     /*
     int offset = 0;
-    long sequenceNo = RecordAccess.getU32 (this.record, offset);
+    long sequenceNo = RecordAccess.getU32 (this.body, offset);
       offset += 4;
-    int afi = RecordAccess.getU16 (this.record, offset);
+    int afi = RecordAccess.getU16 (this.body, offset);
       offset += 2;
-    int safi = RecordAccess.getU8 (this.record, offset);
+    int safi = RecordAccess.getU8 (this.body, offset);
 
       try
     {
-      nlri = new Nlri (this.record, offset, afi);
+      nlri = new Nlri (this.body, offset, afi);
     } catch (UnknownHostException e)
     {
       route_btoa.printStackTrace(e);
     }
     offset += nlri.getOffset ();
-    int entryCount = RecordAccess.getU16 (this.record, offset);
+    int entryCount = RecordAccess.getU16 (this.body, offset);
     / *
        try {
        stream=new BufferedInputStream(new FileInputStream("temp.xxx"));
@@ -50,15 +50,15 @@ public class genericRib extends MRTRecord
      * /
     for (int i = 0; i < entryCount; i++)
       {
-	int peerIndex = RecordAccess.getU16 (this.record, offset);
+	int peerIndex = RecordAccess.getU16 (this.body, offset);
 
 	offset += 2;
-	long time = RecordAccess.getU32 (this.record, offset);
+	long time = RecordAccess.getU32 (this.body, offset);
 	offset += 4;
-	int attrLen = RecordAccess.getU16 (this.record, offset);
+	int attrLen = RecordAccess.getU16 (this.body, offset);
 	offset += 2;
 	GetAttributes bgp4Attributes =
-	  new GetAttributes (record, attrLen, offset);
+	  new GetAttributes (body, attrLen, offset);
 
 	Vector attributes = bgp4Attributes.getAttributes ();
 	StringBuffer attr = new StringBuffer ();
@@ -86,5 +86,5 @@ public class genericRib extends MRTRecord
   // private final int RIB_IP6_AFI=2;
   // private Nlri nlri;
   // private byte[] header;
-  // private byte[] record;
+  // private byte[] body;
 }

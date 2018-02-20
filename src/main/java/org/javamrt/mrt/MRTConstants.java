@@ -79,7 +79,7 @@ public class MRTConstants {
 	public static final int ATTRIBUTE_CONNECTOR = 20;
 	public static final int ATTRIBUTE_ASPATHLIMIT = 21;
 	public static final int ATTRIBUTE_LARGE_COMMUNITY = 22;
-	public static final int ATTRIBUTE_TOTAL = 23;
+	public static final int ATTRIBUTE_TOTAL = 256;
 
 	public static final int AFI_IPv4 = 1;
 	public static final int AFI_IPv6 = 2;
@@ -113,6 +113,14 @@ public class MRTConstants {
 	public static final int BGP4MSG_NOTIFICATION = 3;
 	public static final int BGP4MSG_KEEPALIVE = 4;
 	public static final int BGP4MSG_REFRESH = 5;
+
+	public static final int BGPDUMP_TYPE_MRTD_BGP = 5;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_UPDATE= 1;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_STATE_CHANGE = 3;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_KEEPALIVE = 7;
+
+	public static final String UPDATE_STR_BGP4MP = "BGP4MP";
+	public static final String UPDATE_STR_BGP = "BGP";
 
 	public static final String mpSubType(int s) {
 		switch (s) {
@@ -173,9 +181,9 @@ public class MRTConstants {
 	protected static final String ipAddressString(InetAddress ia)
 	{
 		return ia.getHostAddress().
-			// replaceFirst("^[^/]*/", "").
-			replaceFirst(":0(:0)+","::").
-			replaceFirst("^0:","").
-			replaceFirst(":::", "::");
+				// replaceFirst("^[^/]*/", "").
+						replaceFirst(":0(:0)+", "::").
+						replaceFirst("^0:", "").
+						replaceFirst(":::", "::");
 	}
 }

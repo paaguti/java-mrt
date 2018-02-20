@@ -12,18 +12,22 @@ public class StateChange
 {
 
     public StateChange(
-	long 		time,
-	InetAddress 	gatewayIP,
-	AS          	gatewayAS,
-	int 		old_state,
-	int 		new_state)
+            long time,
+            InetAddress gatewayIP,
+            AS gatewayAS,
+            int old_state,
+            int new_state,
+            String updateStr,
+            byte[] header, byte[] record)
     {
+        super(header, record);
       // route_btoa.System_err_println("State Change");
       this.time = time;
       this.gatewayIP = gatewayIP;
       this.gatewayAS = gatewayAS;
       this.old_state = old_state;
       this.new_state = new_state;
+      this.updateStr = updateStr;
     }
 
     private long time;
@@ -33,6 +37,13 @@ public class StateChange
     }
 
     private InetAddress gatewayIP;
+
+    public InetAddress getPeer()
+    {
+        return this.gatewayIP;
+    }
+
+    @Deprecated
     public InetAddress 	getPeerIP()
     {
 	return this.gatewayIP;
@@ -56,15 +67,16 @@ public class StateChange
 	return this.new_state;
     }
 
+    private String updateStr = "";
 
     public String toString()
     {
-	return String.format("BGP4MP|%d|STATE|%s|%s|%d|%d",
+ 	return String.format("%s|%d|STATE|%s|%s|%d|%d",
+                 this.updateStr,
 			     this.time,
-			     this.gatewayIP.getHostAddress(),
+			     MRTConstants.ipAddressString(gatewayIP),
 			     this.gatewayAS.toString(),
 			     this.old_state,
-			     this.new_state).replaceAll("(:0)+:0{0,1}","::");
-
+			     this.new_state);
     }
 }

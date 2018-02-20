@@ -12,21 +12,22 @@ public class Advertisement
 {
 
 public
-    Advertisement(byte[]      header,
-		  InetAddress peerIP,
-		  AS          peerAS,
-		  Prefix      prefix,
-		  Attributes  updateAttr)
+    Advertisement(byte[] header,
+                  byte[] record,
+                  InetAddress peerIP,
+                  AS peerAS,
+                  Prefix prefix,
+                  Attributes updateAttr,
+                  String updateStr)
   {
     super(header,
+	  record,
 	  peerIP,
 	  peerAS,
 	  prefix,
-	  updateAttr);
+	  updateAttr,
+      updateStr);
     this.updateType = 'A';
-    //
-    //    this.updateStr  = updateStr;
-    //
   }
 
 @Override

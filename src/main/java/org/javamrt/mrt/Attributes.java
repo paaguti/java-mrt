@@ -6,12 +6,16 @@
 
 package org.javamrt.mrt;
 
-import java.net.InetAddress;
-import java.util.Vector;
 import org.javamrt.utils.Debug;
 import org.javamrt.utils.RecordAccess;
 
+import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Vector;
+
 public class Attributes {
+
+	private final byte[] bytes;
 
 	public Attributes(byte[] record, int attrLen, int attrPos, int attrBytes)
 			throws Exception {
@@ -19,11 +23,15 @@ public class Attributes {
 			throw new AttributeException(String.format(
 					"Attributes needs attrBytes 2 or 4 (not %d", attrBytes));
 		decode(record, attrLen, attrPos, attrBytes);
+		bytes = Arrays.copyOfRange(record, attrPos, attrPos + attrLen);
 	}
 
 	public Attributes(byte[] record, int attrLen, int attrPos) throws Exception {
 		decode(record, attrLen, attrPos, 2);
+		bytes = Arrays.copyOfRange(record, attrPos, attrPos + attrLen);
 	}
+
+	public byte[] getBytes() { return bytes; }
 
 	private void decode(byte[] record, int attrLen, int attrPos, int attrBytes)
 			throws Exception {
@@ -239,19 +247,14 @@ public class Attributes {
 				this.hasASPATHLimit = true;
 				break;
 
-			case MRTConstants.ATTR_SET:
-				// unsupported attribute. ignoring
-				if (Debug.compileDebug)
-					Debug.println("ATTR_SET");
-				break;
-
                         case MRTConstants.LARGE_COMMUNITY:
                                 Attribute largeCommunity = new LargeCommunity(buffer);
                                 attributes.set(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY, largeCommunity);
                                 break;
 
-			default:
-				throw new AttributeException(type);
+				default:
+					attributes.set(type, new UnsupportedAttribute(type, buffer));
+					break;
 			}
 		}
 	}
@@ -272,9 +275,15 @@ public class Attributes {
 		toStr = new String();
 
 		for (int i = MRTConstants.ATTRIBUTE_AS_PATH; i <= MRTConstants.ATTRIBUTE_AGGREGATOR; i++) {
-			if (attributes.elementAt(i) != null)
+			if (attributes.elementAt(i) != null) {
+				if (i == MRTConstants.ATTRIBUTE_NEXT_HOP) {
+					if (attributes.elementAt(MRTConstants.ATTRIBUTE_MP_REACH) != null) {
+						toStr = toStr.concat(attributes.elementAt(MRTConstants.ATTRIBUTE_MP_REACH).toString()).concat("|");
+						continue;
+					}
+				}
 				toStr = toStr.concat(attributes.elementAt(i).toString());
-			else {
+			} else {
 				if (i == MRTConstants.ATTRIBUTE_LOCAL_PREF
 						|| i == MRTConstants.ATTRIBUTE_MULTI_EXIT)
 					toStr = toStr.concat("0");

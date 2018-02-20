@@ -41,7 +41,7 @@ public class Refresh
 
   public Refresh (byte[]header, byte[]record)
   {
-    super (header);
+    super (header, record);
     this.AFI  = RecordAccess.getU16(record,0);
     this.SAFI = RecordAccess.getU8 (record,2);
   }
@@ -49,7 +49,7 @@ public class Refresh
   public String toString ()
   {
     return String.format("BGP4MP|%d|REFRESH|%d|%d",
-			 this.time,
+			 this.getTime(),
 			 this.AFI,
 			 this.SAFI);
   }
