@@ -178,12 +178,17 @@ public class MRTConstants {
 	 *
 	 * for all addresses, removes initial name
 	 */
-	protected static final String ipAddressString(InetAddress ia)
+	public static final String ipAddressString(InetAddress ia)
 	{
-		return ia.getHostAddress().
-				// replaceFirst("^[^/]*/", "").
-						replaceFirst(":0(:0)+", "::").
-						replaceFirst("^0:", "").
-						replaceFirst(":::", "::");
+	    String ip = ia.getHostAddress().
+                // replaceFirst("^[^/]*/", "").
+                        replaceFirst(":0(:0)+", "::").
+                        replaceFirst("^0:", "").
+                        replaceFirst(":::", "::");
+
+        if(ip.equals(":"))
+            ip = "::";
+
+		return ip;
 	}
 }
