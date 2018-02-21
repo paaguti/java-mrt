@@ -141,6 +141,10 @@ public class MpReach implements Attribute {
 
 	}
 
+	public boolean getIsInIpv4EmbeddedIpv6Format(){
+		return isInIpv4EmbeddedIpv6Format;
+	}
+
 	public Vector<Nlri> getNlri() {
 		return nlriVector;
 	}
