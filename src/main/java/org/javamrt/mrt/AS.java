@@ -6,6 +6,7 @@
 
 package org.javamrt.mrt;
 
+import java.nio.ByteBuffer;
 import java.util.Comparator;
 
 /**
@@ -16,70 +17,37 @@ import java.util.Comparator;
 public class AS implements Comparable<AS>, Comparator<AS> {
 	public static final int AS_TRANS = 23456;
 	public static final AS NullAS = new AS(0);
-	// protected long ASnumber;
-	protected byte ASCode[] = {0,0,0,0};
+	private long asNumber;
 
 	protected AS() {
 	}
 
 	public AS(long ASnumber) {
-		setASCode(ASnumber & 0xffffffff);
+		asNumber = ASnumber & 0xffffffffL;
 	}
 
-	public AS(byte[] as) throws Exception {
-		setASCode(as);
-	}
-
-
-	private void setASCode(long val) {
-		for (int i = 0; i < 4; i++)
-			ASCode[i] = (byte) ((val >> ((3 - i) * 8)) & 0xff);
-	}
-
-	private void setASCode(byte[] newval) throws Exception {
-		if (newval.length == 2) {
-			this.ASCode[0] =
-			this.ASCode[1] = 0;
-			this.ASCode[2] = newval[0];
-			this.ASCode[3] = newval[1];
-		} else if (newval.length == 4) {
-			this.ASCode[0] = newval[0];
-			this.ASCode[1] = newval[1];
-			this.ASCode[2] = newval[2];
-			this.ASCode[3] = newval[3];
-		} else
-			throw new Exception(String.format("AS must be 2 or 4 bytes long (%d not allowed)",newval.length));
+	public AS(byte[] as) {
+		if (as.length != 2 && as.length != 4) {
+			throw new IllegalArgumentException(String.format("AS must be 2 or 4 bytes long (%d not allowed)", as.length));
+		}
+		ByteBuffer byteBuffer = ByteBuffer.wrap(as);
+		asNumber = (as.length == 2) ? unsignedToLong(byteBuffer.getShort()) : unsignedToLong(byteBuffer.getInt());
 	}
 
 	public long getASN() {
-		long result = 0;
-		for (int i=0; i<ASCode.length;i++) {
-			result = (result << 8) & 0xffffff00;
-			result = result | (ASCode[i] & 0x000000ff);
-		}
-		return result;
+		return asNumber;
 	}
 
 	public void setASN(long ASnumber) {
-		this.setASCode(ASnumber & 0xffffffff);
+		this.asNumber = ASnumber & 0xffffffffL;
 	}
-
-//	public long getASN() {
-//		return this.ASnumber;
-//	}
-
 
 	public int compareTo(org.javamrt.mrt.AS other) {
 		return compare(this, other);
 	}
 
 	public int compare(org.javamrt.mrt.AS as1, org.javamrt.mrt.AS as2) {
-		for (int i=0;i<4;i++) {
-			if (as1.ASCode[i] == as2.ASCode[i])
-				continue;
-			return ((int)as1.ASCode[i] & 0xff) - ((int)as2.ASCode[i] & 0xff);
-		}
-		return 0;
+		return Long.compare(as1.asNumber, as2.asNumber);
 	}
 
 	/**
@@ -87,10 +55,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 	 * @return true if the other AS
 	 */
 	private boolean equals(AS other) {
-		for (int i=0; i<4; i++)
-			if (this.ASCode[i] != other.ASCode[i])
-				return false;
-		return true;
+		return other != null && this.asNumber == other.asNumber;
 	}
 
 	/**
@@ -118,44 +83,40 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 		return false;
 	}
 
+	@Override
+	public int hashCode() {
+		return Long.hashCode(asNumber);
+	}
+
 	/**
 	 * @return true if this is a 4 byte AS number
 	 */
 	public boolean is4Byte() {
-		return this.ASCode[0] != 0 || this.ASCode[1] != 0;
+		return asNumber > 0xFFFFL;
 	}
 
 	/**
-	 * @return true if the AS number is 23456, the 4 byte AS place holder
-	 * comparison is byte by byte
+	 * @return true if the AS number is 23456
 	 */
 	public boolean isPlaceholder() {
-		return this.equals(AS_TRANS);
+		return asNumber == AS_TRANS;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		if (this.equals(0))        return "AS_NULL";
-		if (this.equals(AS_TRANS)) return "AS_TRANS";
+// this has never worked, so do not think we should fix it now
+//		if (this.equals(0))        return "AS_NULL";
+//		if (this.equals(AS_TRANS)) return "AS_TRANS";
 
-		if (this.is4Byte())
-			return String.format("%d",unsignedToLong((hiWord()<<16) + loWord()));
-		return String.format("%d", unsignedToLong(loWord()));
+		return String.valueOf(asNumber);
 	}
 
-	public static long unsignedToLong(int address) {
-		return address & 0xffffffffL;
+	public static long unsignedToLong(int number) {
+		return number & 0xffffffffL;
 	}
 
-	private int hiWord() {
-		return ((this.ASCode[0] & 0xff) << 8) | (this.ASCode[1] & 0xff);
-	}
-
-	private int loWord() {
-		return ((this.ASCode[2] & 0xff) << 8) | (this.ASCode[3] & 0xff);
-	}
 	/**
 	 * @param prefix
 	 * @return a String containing the prefix followed by the AS textual representation
@@ -179,7 +140,11 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 				asnum = asnum * 0x10000L + asnum1;
 				result = new AS(asnum);
 			} else {
-				result = new AS(Long.parseLong(asspec));
+				long number = Long.parseLong(asspec);
+				if (number < 0 || number > 0xFFFFFFFFL) {
+					throw new IllegalArgumentException("number must be in [0,4294967295]");
+				}
+				result = new AS(number);
 			}
 		} else {
 			throw new Exception ("Incorrect AS specification: "+asspec);
