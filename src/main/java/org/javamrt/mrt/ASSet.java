@@ -6,16 +6,17 @@
 
 package org.javamrt.mrt;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 // import org.javamrt.utils.RecordAccess;
 
 public class ASSet extends AS
 {
-	protected LinkedList<AS> asSet;
+	protected final ArrayList<AS> asSet = new ArrayList<>();
 
-	public ASSet(LinkedList<AS> asList) {
-		this.asSet = new LinkedList<AS>();
+	public ASSet(Collection<AS> asList) {
 		this.asSet.addAll(asList);
 	}
 
@@ -33,7 +34,12 @@ public class ASSet extends AS
 		return this.asSet.equals(other.asSet);
 	}
 
-	public LinkedList<AS> getASList() {
+	@Override
+	public int hashCode() {
+		return asSet.hashCode();
+	}
+
+	public List<AS> getASList() {
 		return this.asSet;
 	}
 
