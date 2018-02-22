@@ -15,7 +15,17 @@ public class ASTest {
     }
 
     @Test
-    public void should_create_AS_from_bytes() {
+    public void should_create_AS_from_2_bytes() {
+        Assert.assertEquals(0L, new AS(new byte[]{0,0}).getASN());
+        Assert.assertEquals(5L, new AS(new byte[]{0,5}).getASN());
+        Assert.assertEquals(255L, new AS(new byte[]{0,-1}).getASN());
+        Assert.assertEquals(256L, new AS(new byte[]{1,0}).getASN());
+        Assert.assertEquals(0xffffL, new AS(new byte[]{-1,-1}).getASN());
+        Assert.assertEquals(0x8990L, new AS(new byte[]{(byte)0x89,(byte)0x90}).getASN());
+    }
+
+    @Test
+    public void should_create_AS_from_4_bytes() {
         Assert.assertEquals(0L, new AS(new byte[]{0,0,0,0}).getASN());
         Assert.assertEquals(5L, new AS(new byte[]{0,0,0,5}).getASN());
         Assert.assertEquals(65535L, new AS(new byte[]{0,0,-1,-1}).getASN());

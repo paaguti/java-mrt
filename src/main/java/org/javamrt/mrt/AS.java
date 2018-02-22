@@ -6,7 +6,7 @@
 
 package org.javamrt.mrt;
 
-import java.nio.ByteBuffer;
+import java.math.BigInteger;
 import java.util.Comparator;
 
 /**
@@ -30,8 +30,7 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 		if (as.length != 2 && as.length != 4) {
 			throw new IllegalArgumentException(String.format("AS must be 2 or 4 bytes long (%d not allowed)", as.length));
 		}
-		ByteBuffer byteBuffer = ByteBuffer.wrap(as);
-		asNumber = (as.length == 2) ? unsignedToLong(byteBuffer.getShort()) : unsignedToLong(byteBuffer.getInt());
+		asNumber = new BigInteger(1, as).longValue();
 	}
 
 	public long getASN() {
@@ -111,10 +110,6 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 //		if (this.equals(AS_TRANS)) return "AS_TRANS";
 
 		return String.valueOf(asNumber);
-	}
-
-	public static long unsignedToLong(int number) {
-		return number & 0xffffffffL;
 	}
 
 	/**
