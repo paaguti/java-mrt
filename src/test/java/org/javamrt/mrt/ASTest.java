@@ -1,71 +1,82 @@
 package org.javamrt.mrt;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 public class ASTest {
 
     @Test
     public void should_create_AS() {
-        Assert.assertEquals(0L, new AS(0L).getASN());
-        Assert.assertEquals(5L, new AS(5L).getASN());
-        Assert.assertEquals(65535L, new AS(65535L).getASN());
-        Assert.assertEquals(65536L, new AS(65536L).getASN());
-        Assert.assertEquals(0xFFFFFFFFL, new AS(0xFFFFFFFFL).getASN());
+        assertEquals(0L, new AS(0L).getASN());
+        assertEquals(5L, new AS(5L).getASN());
+        assertEquals(65535L, new AS(65535L).getASN());
+        assertEquals(65536L, new AS(65536L).getASN());
+        assertEquals(0xFFFFFFFFL, new AS(0xFFFFFFFFL).getASN());
     }
 
     @Test
-    public void should_create_AS_from_bytes() {
-        Assert.assertEquals(0L, new AS(new byte[]{0,0,0,0}).getASN());
-        Assert.assertEquals(5L, new AS(new byte[]{0,0,0,5}).getASN());
-        Assert.assertEquals(65535L, new AS(new byte[]{0,0,-1,-1}).getASN());
-        Assert.assertEquals(65536L, new AS(new byte[]{0,1,0,0}).getASN());
-        Assert.assertEquals(0xFFFFFFFFL, new AS(new byte[]{-1,-1,-1,-1}).getASN());
+    public void should_create_AS_from_2_bytes() {
+        assertEquals(0L, new AS(new byte[]{0,0}).getASN());
+        assertEquals(5L, new AS(new byte[]{0,5}).getASN());
+        assertEquals(255L, new AS(new byte[]{0,-1}).getASN());
+        assertEquals(256L, new AS(new byte[]{1,0}).getASN());
+        assertEquals(0xffffL, new AS(new byte[]{-1,-1}).getASN());
+        assertEquals(0x8990L, new AS(new byte[]{(byte)0x89,(byte)0x90}).getASN());
+    }
+
+    @Test
+    public void should_create_AS_from_4_bytes() {
+        assertEquals(0L, new AS(new byte[]{0,0,0,0}).getASN());
+        assertEquals(5L, new AS(new byte[]{0,0,0,5}).getASN());
+        assertEquals(65535L, new AS(new byte[]{0,0,-1,-1}).getASN());
+        assertEquals(65536L, new AS(new byte[]{0,1,0,0}).getASN());
+        assertEquals(0xFFFFFFFFL, new AS(new byte[]{-1,-1,-1,-1}).getASN());
     }
 
     @Test
     public void should_print_AS() {
-        Assert.assertEquals("5", new AS(5L).toString());
-        Assert.assertEquals("0", new AS(0L).toString());
-        Assert.assertEquals("65535", new AS(65535L).toString());
-        Assert.assertEquals("65536", new AS(65536L).toString());
-        Assert.assertEquals("4294967295", new AS(0xFFFFFFFFL).toString());
+        assertEquals("5", new AS(5L).toString());
+        assertEquals("0", new AS(0L).toString());
+        assertEquals("65535", new AS(65535L).toString());
+        assertEquals("65536", new AS(65536L).toString());
+        assertEquals("4294967295", new AS(0xFFFFFFFFL).toString());
     }
 
     @Test
     public void should_compare() {
-        Assert.assertEquals(0, new AS(0L).compareTo(new AS(0L)));
-        Assert.assertEquals(0, new AS(5L).compareTo(new AS(5L)));
-        Assert.assertEquals(0, new AS(65535L).compareTo(new AS(65535L)));
-        Assert.assertEquals(0, new AS(65536L).compareTo(new AS(65536L)));
-        Assert.assertEquals(0, new AS(0xFFFFFFFFL).compareTo(new AS(0xFFFFFFFFL)));
+        assertEquals(0, new AS(0L).compareTo(new AS(0L)));
+        assertEquals(0, new AS(5L).compareTo(new AS(5L)));
+        assertEquals(0, new AS(65535L).compareTo(new AS(65535L)));
+        assertEquals(0, new AS(65536L).compareTo(new AS(65536L)));
+        assertEquals(0, new AS(0xFFFFFFFFL).compareTo(new AS(0xFFFFFFFFL)));
 
-        Assert.assertEquals(1, new AS(5L).compareTo(new AS(0L)));
-        Assert.assertEquals(1, new AS(65535L).compareTo(new AS(5L)));
-        Assert.assertEquals(1, new AS(65536L).compareTo(new AS(65535L)));
-        Assert.assertEquals(1, new AS(0xFFFFFFFFL).compareTo(new AS(65536L)));
+        assertEquals(1, new AS(5L).compareTo(new AS(0L)));
+        assertEquals(1, new AS(65535L).compareTo(new AS(5L)));
+        assertEquals(1, new AS(65536L).compareTo(new AS(65535L)));
+        assertEquals(1, new AS(0xFFFFFFFFL).compareTo(new AS(65536L)));
 
-        Assert.assertEquals(-1, new AS(0L).compareTo(new AS(5L)));
-        Assert.assertEquals(-1, new AS(5L).compareTo(new AS(65535L)));
-        Assert.assertEquals(-1, new AS(65535L).compareTo(new AS(65536L)));
-        Assert.assertEquals(-1, new AS(65536L).compareTo(new AS(0xFFFFFFFFL)));
+        assertEquals(-1, new AS(0L).compareTo(new AS(5L)));
+        assertEquals(-1, new AS(5L).compareTo(new AS(65535L)));
+        assertEquals(-1, new AS(65535L).compareTo(new AS(65536L)));
+        assertEquals(-1, new AS(65536L).compareTo(new AS(0xFFFFFFFFL)));
     }
 
     @Test
     public void should_equal() {
-        Assert.assertEquals(new AS(0L), new AS(0L));
-        Assert.assertEquals(new AS(5L), new AS(5L));
-        Assert.assertEquals(new AS(65535L), new AS(65535L));
-        Assert.assertEquals(new AS(65536L), new AS(65536L));
-        Assert.assertEquals(new AS(0xFFFFFFFFL), new AS(0xFFFFFFFFL));
+        assertEquals(new AS(0L), new AS(0L));
+        assertEquals(new AS(5L), new AS(5L));
+        assertEquals(new AS(65535L), new AS(65535L));
+        assertEquals(new AS(65536L), new AS(65536L));
+        assertEquals(new AS(0xFFFFFFFFL), new AS(0xFFFFFFFFL));
     }
 
     @Test
     public void should_recognise_4_byte_asn() {
-        Assert.assertEquals(false, new AS(0L).is4Byte());
-        Assert.assertEquals(false, new AS(5L).is4Byte());
-        Assert.assertEquals(false, new AS(65535L).is4Byte());
-        Assert.assertEquals(true, new AS(65536L).is4Byte());
-        Assert.assertEquals(true, new AS(0xFFFFFFFFL).is4Byte());
+        assertEquals(false, new AS(0L).is4Byte());
+        assertEquals(false, new AS(5L).is4Byte());
+        assertEquals(false, new AS(65535L).is4Byte());
+        assertEquals(true, new AS(65536L).is4Byte());
+        assertEquals(true, new AS(0xFFFFFFFFL).is4Byte());
     }
 }
