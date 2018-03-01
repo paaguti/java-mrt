@@ -611,7 +611,7 @@ public class BGPFileReader {
 
 			if (debug) {
 				route_btoa.System_err_println(String.format("peerIndex = %d; peer = %s(%s)\n",
-                        peerIndex, MRTConstants.ipAddressString(peerIP[peerIndex]), peerAS[peerIndex].toString("AS")));
+                        peerIndex, MRTConstants.ipAddressString(peerIP[peerIndex], false), peerAS[peerIndex].toString("AS")));
 			}
 
 			offset += 2;

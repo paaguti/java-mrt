@@ -41,7 +41,7 @@ public class Bgp4Update
 	}
 
 	public String toString() {
-		String peerString = MRTConstants.ipAddressString(this.peerIP);
+		String peerString = MRTConstants.ipAddressString(this.peerIP, false);
 
 		StringBuilder result = new StringBuilder(this.updateStr).append('|')
 				.append(getTime()).append('|')

@@ -33,7 +33,7 @@ public class Notification
   }
 
   public String toString() {
-    String peerString = MRTConstants.ipAddressString(this.peerIP);
+    String peerString = MRTConstants.ipAddressString(this.peerIP, false);
 
     StringBuilder result = new StringBuilder("NOTIFICATION").append('|')
             .append(getTime()).append('|')

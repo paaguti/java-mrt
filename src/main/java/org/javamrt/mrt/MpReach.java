@@ -21,6 +21,7 @@ public class MpReach implements Attribute {
 	private int afi;
 	private int safi;
 	private InetAddress nextHop;
+	private byte[] nextHopBytes;
 	private boolean isInIpv4EmbeddedIpv6Format = false;
 	private Vector<Nlri> nlriVector;
 
@@ -78,13 +79,13 @@ public class MpReach implements Attribute {
 				nhl = 16;
 		}
 
-		byte[] abuf = RecordAccess.getBytes(buffer,offset, nhl);
+		nextHopBytes = RecordAccess.getBytes(buffer,offset, nhl);
 
-		nextHop = InetAddress.getByAddress(abuf);
 
-		if(nextHop instanceof Inet4Address && afi == 2){
-			isInIpv4EmbeddedIpv6Format = true;
-		}
+		nextHop = InetAddress.getByAddress(nextHopBytes);
+
+
+		isInIpv4EmbeddedIpv6Format = MRTConstants.isInIpv4EmbeddedIpv6Format(nextHop, afi);
 
 		offset += nextHopLen;
 
@@ -152,21 +153,19 @@ public class MpReach implements Attribute {
 	public InetAddress getNextHop() {
 		return nextHop;
 	}
+	public byte[] getNextHopBytes() {
+		return nextHopBytes;
+	}
 
 	/*
 	 * public Vector < InetAddress > getSNPA () { return snpaVector; }
 	 */
 	public String toString() {
-		String result = "";
-		String nextHopString = MRTConstants.ipAddressString(nextHop);
-		if(isInIpv4EmbeddedIpv6Format){
-			result = "::ffff:"+nextHopString;
-		} else {
-			result = nextHopString;
-		}
+		return MRTConstants.ipAddressString(nextHop, isInIpv4EmbeddedIpv6Format);
+
 //		String result = "NEXT HOP: " + nextHop.getHostAddress();
 //		for (Nlri nlri : nlriVector)
 //			result += "\n NLRI:" + nlri.toString();
-		return result;
+
 	}
 }
