@@ -21,8 +21,8 @@ public class MRTConstants {
 
 	public static final int asSet = 1;
 	public static final int asSequence = 2;
-	public static final int asConfedSet = 3;
-	public static final int asConfedSequence = 4;
+	public static final int asConfedSequence = 3;
+	public static final int asConfedSet = 4;
 
 	public static String asPathString(int type) {
 	    switch (type) {
