@@ -6,8 +6,12 @@
 
 package org.javamrt.mrt;
 
+
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 public class MRTConstants {
 
@@ -17,8 +21,8 @@ public class MRTConstants {
 
 	public static final int asSet = 1;
 	public static final int asSequence = 2;
-	public static final int asConfedSet = 3;
-	public static final int asConfedSequence = 4;
+	public static final int asConfedSequence = 3;
+	public static final int asConfedSet = 4;
 
 	public static String asPathString(int type) {
 	    switch (type) {
@@ -84,6 +88,9 @@ public class MRTConstants {
 	public static final int AFI_IPv4 = 1;
 	public static final int AFI_IPv6 = 2;
 	public static final int AFI_MAX = AFI_IPv6;
+
+	public static final int IPv4_LENGTH = 4;
+	public static final int IPv6_LENGTH = 16;
 
 	public static final int SAFI_UNICAST = 1;
 	public static final int SAFI_MULTICAST = 2;
@@ -171,19 +178,93 @@ public class MRTConstants {
 	protected static final SimpleDateFormat mrtFormat =
 		new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 
+
 	/**
 	 *
 	 * @param InetAddress ia
-	 * @return Textual representation of the InetAddress
+	 * @param int afi
+	 * @return boolean
+	 *
+	 * It looks if it is an ipv4 embedded in ipv6
+	 */
+	public static final boolean isInIpv4EmbeddedIpv6Format(InetAddress ia, int afi){
+		if(ia instanceof Inet4Address && afi == AFI_IPv6){
+			return true;
+		}
+		if (ia instanceof Inet6Address && ((Inet6Address)ia).isIPv4CompatibleAddress()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * @param byte[] base
+	 * @return boolean
+	 *
+	 * It looks if it is an ipv4 embedded in ipv6
+	 */
+	public static final boolean isInIpv4EmbeddedIpv6Format(byte[] base) {
+		try {
+			InetAddress ia = InetAddress.getByAddress(base);
+			if (ia instanceof Inet4Address && base.length == IPv6_LENGTH) {
+				return true;
+			}
+			if (ia instanceof Inet6Address && ((Inet6Address)ia).isIPv4CompatibleAddress()) {
+				return true;
+			}
+		}catch(Exception e) {
+		    e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * @param InetAddress inetAddress
+	 * @param boolean isIpv4EmbeddedIpv6
+	 * @return Textual representation of the InetAddress.
+	 * It also parses if it is a ipv4 embedded in ip6
 	 *
 	 * for all addresses, removes initial name
 	 */
-	protected static final String ipAddressString(InetAddress ia)
-	{
-		return ia.getHostAddress().
-				// replaceFirst("^[^/]*/", "").
-						replaceFirst(":0(:0)+", "::").
-						replaceFirst("^0:", "").
-						replaceFirst(":::", "::");
+	public static final String ipAddressString(InetAddress inetAddress, boolean isIpv4EmbeddedIpv6) {
+//		String ipAddressString = inetAddress.getHostAddress().
+//				// replaceFirst("^[^/]*/", "").
+//						replaceFirst(":0(:0)+", "::").
+//						replaceFirst("^0:", "").
+//						replaceFirst(":::", "::");
+
+		String ipAddressString = inetAddress.getHostAddress();
+		try {
+
+			if (isIpv4EmbeddedIpv6) {
+
+				if(inetAddress instanceof Inet4Address)
+					ipAddressString = "::ffff:" + ipAddressString;
+				else if (inetAddress instanceof Inet6Address){
+					byte[] ipv4Embedded = Arrays.copyOfRange(inetAddress.getAddress(), 12, IPv6_LENGTH);
+                    String ipv4Str = (Inet4Address.getByAddress(ipv4Embedded)).getHostAddress();
+                    if(ipv4Str.equals("0.0.0.0")) ipv4Str ="";
+					ipAddressString = "::".concat(ipv4Str);
+				}
+			}
+
+			if (ipAddressString.equals(":"))
+				ipAddressString = "::";
+		}catch(Exception e){
+            e.printStackTrace();
+		}
+
+		return ipAddressString;
+	}
+
+	public static final String ipAddressString(byte[] ipAddressBase, boolean isIpv4EmbeddedIpv6){
+		try{
+			return ipAddressString(InetAddress.getByAddress(ipAddressBase), isIpv4EmbeddedIpv6);
+		}catch(Exception e){
+			e.printStackTrace();
+			return new String("??/");
+		}
 	}
 }

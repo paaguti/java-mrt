@@ -131,7 +131,7 @@ protected TableDump(int           view,
     if (dumpString != null)
       return dumpString.toString ();
     String cleanPeer = // this.Peer.getHostAddress ().replaceFirst("(:0){2,7}", ":").replaceFirst("^0::", "::");
-    	MRTConstants.ipAddressString(this.Peer);
+    	MRTConstants.ipAddressString(this.Peer, false);
     dumpString =
       new StringBuffer (this.type+"|" + this.origTime);
     dumpString.append ("|B|" + cleanPeer  +"|");

@@ -123,7 +123,6 @@ public class BGPFileReader {
 	 * throws Exception when something goes wrong
 	 */
 
-	private int recordlen = 0;
 	private int type = 0;
 	private int subtype = 0;
 	private long time = 0;
@@ -187,13 +186,15 @@ public class BGPFileReader {
 			time = RecordAccess.getU32(header, 0);
 			type = RecordAccess.getU16(header, 4);
 			subtype = RecordAccess.getU16(header, 6);
-			recordlen = (int) (0xffffffff & RecordAccess.getU32(header, 8));
+
+			final long recordlen = RecordAccess.getU32(header, 8);
 
 			if (Debug.compileDebug) Debug.println("TIME: " + time + "\n TYPE: " + type
 						+ "\n SUBTYPE: " + subtype + "\n RECORDLENGTH: "
 						+ recordlen);
 
-			this.record = new byte[recordlen];
+			if (recordlen > Integer.MAX_VALUE) throw new RuntimeException("Can't have a record longer than 2147483647 bytes");
+			this.record = new byte[(int) recordlen];
 
 			bytesRead = readFromInputStream(this.in, record, record.length);
 
@@ -610,7 +611,7 @@ public class BGPFileReader {
 
 			if (debug) {
 				route_btoa.System_err_println(String.format("peerIndex = %d; peer = %s(%s)\n",
-                        peerIndex, MRTConstants.ipAddressString(peerIP[peerIndex]), peerAS[peerIndex].toString("AS")));
+                        peerIndex, MRTConstants.ipAddressString(peerIP[peerIndex], false), peerAS[peerIndex].toString("AS")));
 			}
 
 			offset += 2;

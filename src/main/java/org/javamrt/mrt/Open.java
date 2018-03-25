@@ -45,7 +45,7 @@ public class Open
     public long getBgpId(){return this.bgpId;}
 
     public String toString() {
-        String peerString = MRTConstants.ipAddressString(this.peerIP);
+        String peerString = MRTConstants.ipAddressString(this.peerIP, false);
 
         StringBuilder result = new StringBuilder("OPEN").append('|')
                 .append(getTime()).append('|')

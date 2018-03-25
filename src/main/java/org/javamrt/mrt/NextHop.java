@@ -13,6 +13,10 @@ import org.javamrt.utils.RecordAccess;
 
 public class NextHop implements Attribute {
 
+	protected InetAddress nextHopIA;
+	protected byte[] nextHopIABytes;
+	private boolean isInIpv4EmbeddedIpv6Format = false;
+
 	public NextHop() throws Exception {
 		byte nh[] = { (byte) 255, (byte) 255, (byte) 255, (byte) 255 };
 		this.nextHopIA = InetAddress.getByAddress(nh);
@@ -21,8 +25,9 @@ public class NextHop implements Attribute {
 	public NextHop(byte[] buffer) throws Exception {
 		int offset = 0;
 		int len = buffer.length;
-		byte nh[] = RecordAccess.getBytes(buffer, offset, len);
-		this.nextHopIA = InetAddress.getByAddress(nh);
+        nextHopIABytes = RecordAccess.getBytes(buffer, offset, len);
+		this.nextHopIA = InetAddress.getByAddress(nextHopIABytes);
+		isInIpv4EmbeddedIpv6Format = MRTConstants.isInIpv4EmbeddedIpv6Format(nextHopIABytes);
 	}
 
 	public NextHop(InetAddress nextHopIA) throws NullPointerException {
@@ -32,14 +37,17 @@ public class NextHop implements Attribute {
 		this.nextHopIA = nextHopIA;
 	}
 
-	public InetAddress getRaw() {
+	public InetAddress getNextHopIA() {
 		return nextHopIA;
+	}
+	public byte[] getNextHopIABytes() {
+	    return nextHopIABytes;
 	}
 
 	public String toString() {
 		if (this.nextHopIA == null)
 			return null;
-		return MRTConstants.ipAddressString(nextHopIA);
+		return MRTConstants.ipAddressString(nextHopIA, isInIpv4EmbeddedIpv6Format);
 	}
 
 	public boolean isDefault() {
@@ -59,6 +67,4 @@ public class NextHop implements Attribute {
 			return this.nextHopIA.equals(((NextHop) o).nextHopIA);
 		return false;
 	}
-
-	protected InetAddress nextHopIA;
 }

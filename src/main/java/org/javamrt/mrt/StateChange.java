@@ -74,7 +74,7 @@ public class StateChange
  	return String.format("%s|%d|STATE|%s|%s|%d|%d",
                  this.updateStr,
 			     this.time,
-			     MRTConstants.ipAddressString(gatewayIP),
+			     MRTConstants.ipAddressString(gatewayIP, false),
 			     this.gatewayAS.toString(),
 			     this.old_state,
 			     this.new_state);

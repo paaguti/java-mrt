@@ -14,8 +14,7 @@ import java.util.Comparator;
 
 public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 
-	private final static int Inet4AddrLen = 4;
-	private final static int Inet6AddrLen = 16;
+	private boolean isInIpv4EmbeddedIpv6Format = false;
 
 	// for Nlri.java
 	protected byte[] base;
@@ -36,12 +35,12 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	}
 
 	public Prefix(InetAddress addr, int maskLength)
-			throws PrefixMaskException {
+			throws PrefixMaskException, UnknownHostException {
 		setPrefix(addr.getAddress(), maskLength);
 	}
 
 	public Prefix(byte[] addr, int maskLength)
-			throws PrefixMaskException {
+			throws PrefixMaskException, UnknownHostException {
 		setPrefix(addr, maskLength);
 	}
 
@@ -51,13 +50,13 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	}
 
 	protected void setPrefix(byte[] addr, int maskLen)
-			throws PrefixMaskException {
+			throws PrefixMaskException, UnknownHostException {
 		/*
 		 * v2.00
 		 *   Check before anything else
 		 *   backported from org.paag.netkit v2.00
 		 */
-		if (addr.length != Inet4AddrLen && addr.length != Inet6AddrLen)
+		if (addr.length != MRTConstants.IPv4_LENGTH && addr.length != MRTConstants.IPv6_LENGTH)
 			throw new PrefixMaskException(addr, maskLen);
 
 		if (addr.length * 8 < maskLen)
@@ -98,6 +97,8 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 		for (int i = 0; i < this.mask.length; i++) {
 			this.broadcast[i] = (byte) (this.base[i] | ~this.mask[i]);
 		}
+
+		isInIpv4EmbeddedIpv6Format = MRTConstants.isInIpv4EmbeddedIpv6Format(this.base);
 	}
 
 	public InetAddress getBaseAddress() {
@@ -106,6 +107,14 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 		} catch (Exception e) {
 			return null; // should never happen
 		}
+	}
+
+	public byte[] getByteBaseArrayAddress(){
+		return this.base;
+	}
+
+	public boolean getIsInIpv4EmbeddedIpv6Format(){
+		return isInIpv4EmbeddedIpv6Format;
 	}
 
 	public InetAddress getBroadcastAddress() {
@@ -155,7 +164,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 
 	public String toString() {
 		try {
-			return MRTConstants.ipAddressString(InetAddress.getByAddress(this.base)).
+			return MRTConstants.ipAddressString(this.base, isInIpv4EmbeddedIpv6Format).
 				concat("/" + this.maskLength);
 		} catch (Exception e) {
 			return new String("??/"+this.maskLength);
@@ -163,11 +172,11 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	}
 
 	public boolean isIPv4() {
-		return this.base.length == Inet4AddrLen;
+		return this.base.length == MRTConstants.IPv4_LENGTH;
 	}
 
 	public boolean isIPv6() {
-		return this.base.length == Inet6AddrLen;
+		return this.base.length == MRTConstants.IPv6_LENGTH;
 	}
 
 	public int compare(Prefix p1, Prefix p2) {
