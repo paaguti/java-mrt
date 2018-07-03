@@ -32,9 +32,10 @@ public class PrefixMaskException
 		}
 	}
 
-    public String toString() {
-    	return new String(description);
-    }
+	@Override
+	public String getMessage() {
+		return description;
+	}
 
 	private static final long serialVersionUID = 1L;
 }
