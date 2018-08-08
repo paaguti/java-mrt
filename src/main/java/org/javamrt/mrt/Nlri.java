@@ -6,13 +6,13 @@
 
 package org.javamrt.mrt;
 
+import org.javamrt.progs.route_btoa;
 import org.javamrt.utils.RecordAccess;
 
 //IPv4/IPv6 address and mask length extractor from NLRI field in BGP
 
 public class Nlri
-    extends Prefix
-{
+        extends Prefix {
     // from Prefix.java
     //   byte[] addr;
     //   int    maskLength;
@@ -32,41 +32,29 @@ public class Nlri
       |   Prefix (variable)       |
       +---------------------------+
     */
-    if (afi==MRTConstants.AFI_IPv4)
-	this.base=new byte[4];			//deciding the type or address
-    else if (afi==MRTConstants.AFI_IPv6)
-	this.base=new byte[16];
-    else
-	throw new Exception("NLRI: unknown Address Family: "+afi);
-    this.maskLength=RecordAccess.getU8(record, offset); //reading length byte (bits)
-    offset++;
-    this.bytes = 0;
-    if (this.maskLength > 0)
-	{
-	    this.bytes=(this.maskLength-1)/8+1; //converting bits into bytes and deciding number of bytes to be read
-	}
-
-    int i=0;
-
-    while (i < bytes)
-      this.base[i++] = (byte)RecordAccess.getU8(record,offset++); //extracting byte by byte of prefix field
-    //and adding to address array
-    while (i < this.base.length) //filling up with zeros to complete the length of IPv4/v6 address
-      this.base[i++] = 0;
-
-    setPrefix(this.base,this.maskLength);
-  }
-
-
-  public Prefix toPrefix()
-  {
-    return (Prefix)this;
-  }
-
-  public int getOffset() //returning the record offset
-  {
-    return this.bytes+1;
-  }
-
-  private int bytes;
+        if (afi == MRTConstants.AFI_IPv4)
+            this.base = new byte[4];            //deciding the type or address
+        else if (afi == MRTConstants.AFI_IPv6)
+            this.base = new byte[16];
+        else
+            throw new Exception("NLRI: unknown Address Family: " + afi);
+        this.maskLength = RecordAccess.getU8(record, offset); //reading length byte (bits)
+        if (afi == MRTConstants.AFI_IPv4 && maskLength > 32) {
+            route_btoa.System_err_println(String.format("Bit length %d is not feasible for IPv4 prefix (offset %d)%n", maskLength, offset));
+            throw new BGPFileReaderException(String.format(
+                    "Bit length %d is not feasible for IPv4 prefix (offset %d)", maskLength, offset), record);
+        } else if (afi == MRTConstants.AFI_IPv6 && maskLength > 128) {
+            route_btoa.System_err_println(String.format("Bit length %d is not feasible for IPv6 prefix (offset %d)%n", maskLength, offset));
+            throw new BGPFileReaderException(String.format(
+                    "Bit length %d is not feasible for IPv6 prefix (offset %d)", maskLength, offset), record);
+        }
+        offset++;
+        if (offset + nrBytes() > record.length) {
+            throw new ArrayIndexOutOfBoundsException(String.format(
+                    "Not enough input bytes (%s) to read NLRI prefix (%d bytes from offset %d)",
+                    RecordAccess.arrayToString(record), nrBytes(), offset));
+        }
+        System.arraycopy(record, offset, base, 0, nrBytes());
+        setPrefix(this.base, this.maskLength);
+    }
 }

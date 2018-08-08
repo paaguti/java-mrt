@@ -14,7 +14,7 @@ import java.util.Comparator;
 
 public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 
-	private boolean isInIpv4EmbeddedIpv6Format = false;
+	protected boolean isInIpv4EmbeddedIpv6Format = false;
 
 	// for Nlri.java
 	protected byte[] base;
@@ -25,14 +25,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	// protected InetAddress broadcastAddress;
 	protected int maskLength;
 
-	protected Prefix() {
-		//baseAddress = null;
-		//broadcastAddress = null;
-		this.base       = null;
-		this.mask       = null;
-		this.broadcast  = null;
-		this.maskLength = 0;
-	}
+	protected Prefix() {/* for inheritance*/}
 
 	public Prefix(InetAddress addr, int maskLength)
 			throws PrefixMaskException, UnknownHostException {
@@ -75,10 +68,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 			throw new PrefixMaskException(this.base, this.maskLength);
 		}
 		*/
-		for (int n = 0; n < this.mask.length; n++) {
-			this.base[n] = addr[n];
-			this.mask[n] = 0;
-		}
+		System.arraycopy(addr, 0, this.base, 0, this.mask.length);
 		for (int n = this.maskLength; n > 0; n--) {
 			for (int i = 0; i < this.mask.length; i++) {
 				byte carry = (byte) (this.mask[i] & 0x01);
@@ -167,7 +157,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 			return MRTConstants.ipAddressString(this.base, isInIpv4EmbeddedIpv6Format).
 				concat("/" + this.maskLength);
 		} catch (Exception e) {
-			return new String("??/"+this.maskLength);
+			return "??/" + this.maskLength;
 		}
 	}
 
@@ -218,5 +208,19 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 			if (base[i] != 0)
 				return false;
 		return true;
+	}
+
+	/**
+	 * @return number of bytes required to represent this prefix
+	 */
+	public int nrBytes() {
+		return maskLength > 0 ? 1 + (maskLength - 1) / 8 : 0;
+	}
+
+	/**
+	 * @return the number of bytes needed to represent this prefix, plus one
+	 */
+	public int getOffset() {
+		return 1 + nrBytes();
 	}
 }

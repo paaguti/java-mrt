@@ -6,6 +6,10 @@
 
 package org.javamrt.utils;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
 public class RecordAccess
 {
 
@@ -14,33 +18,20 @@ public class RecordAccess
     return getUINT(buffer, offset, 4);
   }
 
-  static public long getUINT (byte[]buffer, int offset,int size)
-  {
-    long result = 0;
-    //    try {
-    for (int i = 0; i < size; i++)
-      {
-	result = ((result << 8) & 0xffffff00) + (buffer[offset + i] & 0xff);
-      }
-    /*
-    } catch (java.lang.ArrayIndexOutOfBoundsException aioobe) {
-        route_btoa.printStackTrace(aioobe);
-        route_btoa.System_err_println(String.format("Accessing %d bytes long buffer at pos %d",buffer.length,offset));
-	dump(buffer);
-        route_btoa.exit(1);
+  static public long getUINT (byte[]buffer, int offset,int size) {
+    if (offset > buffer.length - size) {
+      throw new ArrayIndexOutOfBoundsException(String.format(
+              "Not enough bytes to read %d bytes from offset %d in %s", size, offset, arrayToString(buffer)));
     }
-    */
-    return result;
+    return new BigInteger(1, Arrays.copyOfRange(buffer, offset, offset + size)).longValue();
   }
 
   static public int getU16 (byte[]buffer, int offset)
   {
-    int result = 0;
-    for (int i = 0; i < 2; i++)
-      {
-	result = ((result << 8) & 0xff00) + (buffer[offset + i] & 0xff);
-      }
-    return result;
+    if (offset > buffer.length - 2) {
+      throw new ArrayIndexOutOfBoundsException("Not enough bytes to read U16 from offset " + offset + " in " + arrayToString(buffer));
+    }
+    return ((buffer[offset] & 0xff) << 8) | (buffer[offset+1] & 0xff);
   }
 
   static public int getU8 (byte[]buffer, int offset)
@@ -50,20 +41,22 @@ public class RecordAccess
 
   static public byte[] getBytes (byte[]buffer, int offset, int length)
   {
-    byte[]result = new byte[length];
-    for (int i = 0; i < length; i++)
-      result[i] = buffer[offset + i];
-    return result;
+    if (buffer.length < offset + length) {
+      throw new ArrayIndexOutOfBoundsException(String.format(
+              "Not enough bytes to read %d bytes from offset %d in %s", length, offset, arrayToString(buffer)));
+    }
+    return Arrays.copyOfRange(buffer, offset, offset + length);
   }
 
   static public String arrayToString(byte[] buffer)
   {
-    return arrayToString(buffer,0,buffer.length);
+    final int offset = Math.max(0, buffer.length - 128);
+    return arrayToString(buffer, offset, buffer.length - offset);
   }
 
   static public String arrayToString(byte[] buffer,int offset,int len)
   {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
 
 
     for (int i=offset - (offset % 8);i < offset+len;i++)
@@ -111,4 +104,19 @@ public class RecordAccess
     dump(System.err,buffer,buffer.length);
   }
 
+  public static long getUINT(ByteBuffer buffer, int size) {
+    byte[] bytes = new byte[size];
+    buffer.get(bytes);
+    return new BigInteger(1, bytes).longValue();
+  }
+
+  public static int getU16(ByteBuffer buffer) {
+    return buffer.getShort() & 0xFFFF;
+  }
+
+  public static byte[] getBytes(ByteBuffer buffer, int size) {
+    byte[] bytes = new byte[size];
+    buffer.get(bytes);
+    return bytes;
+  }
 }

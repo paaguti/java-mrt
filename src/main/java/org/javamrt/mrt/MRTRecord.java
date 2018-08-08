@@ -13,8 +13,8 @@ import java.util.Arrays;
 
 
 public class MRTRecord {
-	protected byte[] header;
-	protected byte[] body;
+	final protected byte[] header;
+	final protected byte[] body;
 
 	protected MRTRecord(byte[] header, byte[] body) {
 		this.header = header;

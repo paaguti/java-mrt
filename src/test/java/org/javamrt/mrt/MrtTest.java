@@ -1,16 +1,20 @@
 package org.javamrt.mrt;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 public class MrtTest {
+
+    private Base64.Decoder b64 = Base64.getDecoder();
 
     @Test
     public void testParseUnsignedAsn()
@@ -23,7 +27,7 @@ public class MrtTest {
             int offset = 0;
 
             ASPathSegment asPathSegment = new ASPathSegment(asnBuffer, offset, asSize);
-            assertEquals(asPath, asPathSegment.toString());
+            assertEquals(asPathSegment.toString(), asPath);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,5 +103,69 @@ public class MrtTest {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void should_parse_empty_update() throws Exception {
+        final byte[] bytes = b64.decode("RtX+aQAQAAEAAAAnMr0xbgAAAAHDQuDjw0Lh8f////////////////////8AFwIAAAAA");
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        final MRTRecord mrtRecord = bgpFileReader.readNext();
+        assertEquals(mrtRecord.getPeer().toString(), "/195.66.224.227");
+        assertEquals(mrtRecord.getPeerAS().toString(), "12989");
+        assertEquals(mrtRecord.getTime(), 1188429417);
+        assertEquals(mrtRecord.getType(), MRTConstants.BGP4MP);
+        assertEquals(mrtRecord.getSubType(), MRTConstants.BGP4MP_MESSAGE);
+        assertNull(mrtRecord.getASPath());
+        assertNull(mrtRecord.getPrefix());
+    }
+
+    @Test
+    public void should_parse_update_without_nlri() throws Exception {
+        final byte[] bytes = b64.decode("RwcWQgAQAAEAAAB+GxsxbgAAAAIgAQf4AAQAAAAAAAAbGwABIAEH+AAEAAAAAAAAMW4AAP////////////////////8AVgIAAAA/QAEBAEACEAIHGxsJ1B3sXt9fqlHlCx+ADiUAAgEgIAEH+AAEAAAAAAAAGxsAAf6AAAAAAAAAAgzb//7/EysA");
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        final Bgp4Update mrtRecord = (Bgp4Update)bgpFileReader.readNext();
+        assertEquals(mrtRecord.getPeer().toString(), "/2001:7f8:4:0:0:0:1b1b:1");
+        assertEquals(mrtRecord.getPeerAS().toString(), "6939");
+        assertEquals(mrtRecord.getTime(), 1191646786);
+        assertEquals(mrtRecord.getType(), MRTConstants.BGP4MP);
+        assertEquals(mrtRecord.getSubType(), MRTConstants.BGP4MP_MESSAGE);
+        assertEquals(mrtRecord.getASPath().toString(), "6939 2516 7660 24287 24490 20965 2847");
+        assertNull(mrtRecord.getPrefix());
+        assertEquals(mrtRecord.getAttributes().toString(), "6939 2516 7660 24287 24490 20965 2847|IGP|2001:7f8:4:0:0:0:1b1b:1|0|0||NAG||");
+    }
+
+    @Test
+    public void should_parse_8byte_state_change() throws Exception {
+        final byte[] bytes = b64.decode("OfZLTAAQAAAAAAAIAAAAAAADAAQ=");
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        BGPFileReader.setLenient(true);
+        final MRTRecord mrtRecord = bgpFileReader.readNext();
+        assertEquals(mrtRecord.getClass(), StateChange.class);
+        assertEquals(mrtRecord.toString(), "BGP4MP|972442444|STATE|0.0.0.0|0|3|4");
+    }
+
+    @Test
+    public void should_parse_AFI0_and_realign_bgp_message() throws Exception {
+        final byte[] bytes = b64.decode("OfZOxAAQAAEAAAAhAAAAAP////////////////////8AHQEEMGYAtNQyoccA");
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        BGPFileReader.setLenient(true);
+        final MRTRecord mrtRecord = bgpFileReader.readNext();
+        assertEquals(mrtRecord.getClass(), Open.class);
+        assertEquals(mrtRecord.toString(), "OPEN|972443332|0.0.0.0|0|3560088007");
+    }
+
+    @Test
+    public void should_truncate_attributes_to_record_length() throws Exception {
+        final byte[] bytes = b64.decode("USa7OAAQAAQAAAByAAAjKgAAMW4AAAACIAEH+AAEAAAAAAAAIyoAASABB/gABAAAAAAAADFuAAD/////////////////////AEYCAAAAL0ABAQBAAgoCAgAAIyoAABp2kA4AGgACARAgAQf4AAQAAAAAAAAadgABACAgAQm4");
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        BGPFileReader.setLenient(true);
+        final MRTRecord mrtRecord = bgpFileReader.readNext();
+        assertEquals(mrtRecord.getClass(), Advertisement.class);
+        assertEquals(mrtRecord.toString(), "BGP4MP|1361492792|A|2001:7f8:4:0:0:0:232a:1|9002|2001:9b8:0:0:0:0:0:0/32|9002 6774|IGP|2001:7f8:4:0:0:0:1a76:1|0|0||NAG||");
     }
 }

@@ -82,9 +82,8 @@ public class ASPath implements Attribute {
 		try {
 			return path.get(i);
 		} catch (IndexOutOfBoundsException iobe) {
-			//
+			return null;
 		}
-		return null;
 	}
 
 	public void set(int index,AS element) {

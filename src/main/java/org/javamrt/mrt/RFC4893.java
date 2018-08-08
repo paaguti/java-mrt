@@ -48,9 +48,19 @@ public class RFC4893 {
 		 *    for the AS4_PATH attribute.
          */
 
-		for (AS as4:as4path.path) {
-			if (as4 instanceof ASConfedSet || as4 instanceof ASConfedSequence)
-				throw new RFC4893Exception(MRTConstants.asConfedSequence, aspath,as4path);
+		for (AS as4 : as4path.path) {
+			if (as4 instanceof ASConfedSet || as4 instanceof ASConfedSequence) {
+				if (BGPFileReader.isLenient()) {
+					route_btoa.System_err_println(String.format("RFC4893 violation with AS4PATH containing %s%n" +
+									"  while trying to modify: %s%n" +
+									"  with 4 byte ASPATH:     %s",
+							MRTConstants.asPathString(MRTConstants.asConfedSequence),
+							aspath,
+							as4path));
+				} else {
+					throw new RFC4893Exception(MRTConstants.asConfedSequence, aspath,as4path);
+				}
+			}
 		}
 
 		if (DEBUG) {

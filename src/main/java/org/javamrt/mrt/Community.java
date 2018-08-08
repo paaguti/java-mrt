@@ -8,6 +8,8 @@ package org.javamrt.mrt;
 
 import org.javamrt.utils.RecordAccess;
 
+import java.util.Arrays;
+
 
 public class Community implements Attribute {
 	static final private int BGP_ATTR_COMMUNITY_NO_EXPORT = 0xFFFFFF01;
@@ -23,8 +25,7 @@ public class Community implements Attribute {
 
 	public Community(byte[] buffer) {
 		community = new byte[buffer.length];
-		for (int i = 0; i < buffer.length; i++)
-			community[i] = buffer[i];
+		System.arraycopy(buffer, 0, community, 0, buffer.length);
 	}
 
 	public static Community empty() {
@@ -66,12 +67,7 @@ public class Community implements Attribute {
 	}
 
 	public boolean equals(Community other) {
-		if (this.community.length != other.community.length)
-			return false;
-		for (int i = 0; i < this.community.length; i++)
-			if (this.community[i] != other.community[i])
-				return false;
-		return true;
+		return Arrays.equals(this.community, other.community);
 	}
 
 	public boolean equals(Object o) {
