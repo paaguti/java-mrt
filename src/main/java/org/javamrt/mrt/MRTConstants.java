@@ -10,6 +10,7 @@ package org.javamrt.mrt;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
@@ -122,14 +123,19 @@ public class MRTConstants {
 	public static final int BGP4MSG_REFRESH = 5;
 
 	public static final int BGPDUMP_TYPE_MRTD_BGP = 5;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_NULL= 0;
 	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_UPDATE= 1;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_PREF_UPDATE= 2;
 	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_STATE_CHANGE = 3;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_SYNC = 4;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_OPEN = 5;
+	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_NOTIFY = 6;
 	public static final int BGPDUMP_SUBTYPE_MRTD_BGP_KEEPALIVE = 7;
 
 	public static final String UPDATE_STR_BGP4MP = "BGP4MP";
 	public static final String UPDATE_STR_BGP = "BGP";
 
-	public static final String mpSubType(int s) {
+	public static String mpSubType(int s) {
 		switch (s) {
 		case BGP4MP_STATE_CHANGE:
 			return "BGP4MP_STATE_CHANGE";
@@ -148,7 +154,7 @@ public class MRTConstants {
 		}
 	}
 
-	public static final String attrFlags(byte attr) {
+	public static String attrFlags(byte attr) {
 		String result = "";
 		if (0 != (attr & BGP_ATTR_FLAG_OPTIONAL)) result = result + "OPTIONAL ";
 		if (0 != (attr & BGP_ATTR_FLAG_TRANS))    result = result + "TRANSITIVE ";
@@ -167,7 +173,7 @@ public class MRTConstants {
 		"BGP4MSG_REFRESH"
 	};
 
-	public static final String bgpType(int bgpType) {
+	public static String bgpType(int bgpType) {
 		try {
 			return bgpTypes[bgpType];
 		} catch (Exception e) {
@@ -187,7 +193,7 @@ public class MRTConstants {
 	 *
 	 * It looks if it is an ipv4 embedded in ipv6
 	 */
-	public static final boolean isInIpv4EmbeddedIpv6Format(InetAddress ia, int afi){
+	public static boolean isInIpv4EmbeddedIpv6Format(InetAddress ia, int afi){
 		if(ia instanceof Inet4Address && afi == AFI_IPv6){
 			return true;
 		}
@@ -204,7 +210,7 @@ public class MRTConstants {
 	 *
 	 * It looks if it is an ipv4 embedded in ipv6
 	 */
-	public static final boolean isInIpv4EmbeddedIpv6Format(byte[] base) {
+	public static boolean isInIpv4EmbeddedIpv6Format(byte[] base) {
 		try {
 			InetAddress ia = InetAddress.getByAddress(base);
 			if (ia instanceof Inet4Address && base.length == IPv6_LENGTH) {
@@ -213,8 +219,8 @@ public class MRTConstants {
 			if (ia instanceof Inet6Address && ((Inet6Address)ia).isIPv4CompatibleAddress()) {
 				return true;
 			}
-		}catch(Exception e) {
-		    e.printStackTrace();
+		} catch (UnknownHostException e) {
+			throw new RuntimeException(e);
 		}
 		return false;
 	}
@@ -228,18 +234,12 @@ public class MRTConstants {
 	 *
 	 * for all addresses, removes initial name
 	 */
-	public static final String ipAddressString(InetAddress inetAddress, boolean isIpv4EmbeddedIpv6) {
-//		String ipAddressString = inetAddress.getHostAddress().
-//				// replaceFirst("^[^/]*/", "").
-//						replaceFirst(":0(:0)+", "::").
-//						replaceFirst("^0:", "").
-//						replaceFirst(":::", "::");
+	public static String ipAddressString(InetAddress inetAddress, boolean isIpv4EmbeddedIpv6) {
+	    if (inetAddress == null) return "";
 
 		String ipAddressString = inetAddress.getHostAddress();
 		try {
-
 			if (isIpv4EmbeddedIpv6) {
-
 				if(inetAddress instanceof Inet4Address)
 					ipAddressString = "::ffff:" + ipAddressString;
 				else if (inetAddress instanceof Inet6Address){
@@ -252,19 +252,19 @@ public class MRTConstants {
 
 			if (ipAddressString.equals(":"))
 				ipAddressString = "::";
-		}catch(Exception e){
-            e.printStackTrace();
+		} catch (UnknownHostException e) {
+			throw new RuntimeException(e);
 		}
 
 		return ipAddressString;
 	}
 
-	public static final String ipAddressString(byte[] ipAddressBase, boolean isIpv4EmbeddedIpv6){
-		try{
-			return ipAddressString(InetAddress.getByAddress(ipAddressBase), isIpv4EmbeddedIpv6);
-		}catch(Exception e){
-			e.printStackTrace();
-			return new String("??/");
-		}
-	}
+    public static String ipAddressString(byte[] ipAddressBase, boolean isIpv4EmbeddedIpv6) {
+        try {
+            return ipAddressString(InetAddress.getByAddress(ipAddressBase), isIpv4EmbeddedIpv6);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return "??/";
+        }
+    }
 }

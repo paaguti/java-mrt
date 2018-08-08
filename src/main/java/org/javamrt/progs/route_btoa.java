@@ -242,7 +242,9 @@ public class route_btoa {
         if (outputErrToBuilder) {
             errBuilder.append(str).append(System.lineSeparator());
         } else {
+            System.out.flush();
             System.err.println(str);
+            System.err.flush();
         }
     }
 

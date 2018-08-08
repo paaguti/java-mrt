@@ -80,7 +80,8 @@ public class RFC4893Exception extends Exception {
 		return this.as4path;
 	}
 
-	public String toString() {
+	@Override
+	public String getMessage() {
 		if (peer == null || as == null)
 			return String.format("RFC4893 violation @ %d: AS4PATH contains %s",this.timestamp,MRTConstants.asPathString(cause));
 		return String.format(
