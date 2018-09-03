@@ -376,7 +376,6 @@ public class BGPFileReader implements Closeable {
 				Withdraw withdraw = new Withdraw(header, record, peerIP, peerAS, prefix, MRTConstants.UPDATE_STR_BGP);
                 recordFifo.add(withdraw);
             }
-        }else{ // Advertisments
 
             //Reading length of attributes
             int attrLen = RecordAccess.getU16(record, offset);
@@ -409,7 +408,6 @@ public class BGPFileReader implements Closeable {
                             aNlri, attributes, MRTConstants.UPDATE_STR_BGP));
                 }
             }
-        }
 
         return recordFifo.remove();
     }
