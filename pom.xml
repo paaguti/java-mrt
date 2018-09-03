@@ -4,7 +4,7 @@
 
     <groupId>net.apnic.mrt</groupId>
     <artifactId>mrt</artifactId>
-    <version>0.0.2-RIPE-5-SNAPSHOT</version>
+    <version>0.0.2-RIPE-5</version>
     <packaging>jar</packaging>
 
     <name>Java MRT File Dumper</name>
@@ -15,7 +15,7 @@
         <url>https://github.com/RIPE-NCC/java-mrt</url>
         <connection>scm:git:git@github.com:RIPE-NCC/java-mrt.git</connection>
         <developerConnection>scm:git:git@github.com:RIPE-NCC/java-mrt.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>mrt-0.0.2-RIPE-5</tag>
   </scm>
 
     <distributionManagement>
