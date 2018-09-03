@@ -168,4 +168,24 @@ public class MrtTest {
         assertEquals(mrtRecord.getClass(), Advertisement.class);
         assertEquals(mrtRecord.toString(), "BGP4MP|1361492792|A|2001:7f8:4:0:0:0:232a:1|9002|2001:9b8:0:0:0:0:0:0/32|9002 6774|IGP|2001:7f8:4:0:0:0:1a76:1|0|0||NAG||");
     }
+
+    @Test
+    public void should_parse_ipv4_end_of_rib() throws Exception {
+        final byte[] bytes = new byte[] {91,15,-4,42,0,16,0,4,0,0,0,43,0,4,5,-96,0,0,49,110,0,0,0,1,-69,16,-36,-63,-69,16,-40,23,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,23,2,0,0,0,0};
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        final MRTRecord mrtRecord = bgpFileReader.readNext();
+        assertEquals(mrtRecord.getClass(), EndOfRib.class);
+        assertEquals(mrtRecord.toString(), "BGP4MP|1527774250||187.16.220.193|263584|");
+    }
+
+    @Test
+    public void should_parse_ipv6_end_of_rib() throws Exception {
+        final byte[] bytes = new byte[] {91,16,-4,-111,0,16,0,4,0,0,0,73,0,0,-77,72,0,0,49,110,0,0,0,2,32,1,13,-16,2,-24,16,0,0,0,0,0,0,0,0,1,32,1,6,124,2,-24,0,2,-1,-1,0,0,0,4,0,40,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,29,2,0,0,0,6,-128,15,3,0,2,1};
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final BGPFileReader bgpFileReader = new BGPFileReader(stream);
+        final MRTRecord mrtRecord = bgpFileReader.readNext();
+        assertEquals(mrtRecord.getClass(), EndOfRib.class);
+        assertEquals(mrtRecord.toString(), "BGP4MP|1527839889||2001:df0:2e8:1000:0:0:0:1|45896|||255.255.255.255|0|0||NAG||");
+    }
 }

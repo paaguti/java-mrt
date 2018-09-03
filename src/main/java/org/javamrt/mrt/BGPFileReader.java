@@ -376,42 +376,44 @@ public class BGPFileReader implements Closeable {
 				Withdraw withdraw = new Withdraw(header, record, peerIP, peerAS, prefix, MRTConstants.UPDATE_STR_BGP);
                 recordFifo.add(withdraw);
             }
-        }else{ // Advertisments
+        }
+        // Advertisments
 
-            //Reading length of attributes
-            int attrLen = RecordAccess.getU16(record, offset);
-            offset +=2;
+        //Reading length of attributes
+        int attrLen = RecordAccess.getU16(record, offset);
+        offset +=2;
 
-            if(attrLen > 0){
+		Attributes attributes = null;
+		if(attrLen > 0){
+            try {
+                attributes = new Attributes(record, attrLen, offset,asSize);
+            } catch (RFC4893Exception rfce) {
+                //
+                // piggyback peer and time info
+                //
+                rfce.setTimestamp(this.time);
+                rfce.setPeer(peerIP);
+                rfce.setAS(peerAS);
+                throw rfce;
+            }
 
-                Attributes attributes;
-                try {
-                    attributes = new Attributes(record, attrLen, offset,asSize);
-                } catch (RFC4893Exception rfce) {
-                    //
-                    // piggyback peer and time info
-                    //
-                    rfce.setTimestamp(this.time);
-                    rfce.setPeer(peerIP);
-                    rfce.setAS(peerAS);
-                    throw rfce;
-                }
+            //Process MP_REACH and MP_UNREACH
+            processReachAndUnreach(header, record, attributes, peerIP, peerAS, MRTConstants.UPDATE_STR_BGP);
 
-				//Process MP_REACH and MP_UNREACH
-                processReachAndUnreach(header, record, attributes, peerIP, peerAS, MRTConstants.UPDATE_STR_BGP);
+            offset += attrLen;
+            while (offset < record.length) {
+                Prefix aNlri = lenient ? new LenientPrefix(record, offset, 1) : new Nlri(record, offset, 1);
+                offset += aNlri.getOffset();
 
-                offset += attrLen;
-                while (offset < record.length) {
-                    Prefix aNlri = lenient ? new LenientPrefix(record, offset, 1) : new Nlri(record, offset, 1);
-                    offset += aNlri.getOffset();
-
-                    recordFifo.add(new Advertisement(header, record, peerIP, peerAS,
-                            aNlri, attributes, MRTConstants.UPDATE_STR_BGP));
-                }
+                recordFifo.add(new Advertisement(header, record, peerIP, peerAS,
+                        aNlri, attributes, MRTConstants.UPDATE_STR_BGP));
             }
         }
-
-        return recordFifo.remove();
+        if (recordFifo.isEmpty()) {
+            return new EndOfRib(header, record, peerIP, peerAS, attributes, MRTConstants.UPDATE_STR_BGP);
+        } else {
+			return recordFifo.remove();
+		}
     }
 
 	private MRTRecord parseBgp4mp(byte[] header, byte[] record, int subtype) throws Exception {
@@ -901,12 +903,10 @@ public class BGPFileReader implements Closeable {
 			}
 		}
 		if (recordFifo.isEmpty()) {
-			if (Debug.compileDebug)
-				if (Debug.doDebug)
-					throw new BGPFileReaderException("recordFifo empty!", header);
-			return new Bgp4Update(header, record, srcIP, srcAs, null, attributes, "");
+			return new EndOfRib(header, record, srcIP, srcAs, attributes, MRTConstants.UPDATE_STR_BGP4MP);
+		} else {
+			return recordFifo.remove();
 		}
-		return recordFifo.remove();
 	}
 
 	private InetAddress unknownAddress(int afi) {
