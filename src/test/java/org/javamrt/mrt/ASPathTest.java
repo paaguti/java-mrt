@@ -132,5 +132,4 @@ public class ASPathTest {
 
         return result;
     }
-
 }

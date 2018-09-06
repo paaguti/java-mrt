@@ -7,7 +7,9 @@
 package org.javamrt.mrt;
 
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author paag
@@ -145,5 +147,12 @@ public class AS implements Comparable<AS>, Comparator<AS> {
 			throw new Exception ("Incorrect AS specification: "+asspec);
 		}
 		return result;
+	}
+
+	/**
+	 * @return list of ASNs, especially useful when not interested in whether it is some type of set, but just want to deal with the numbers
+	 */
+	public List<AS> getASList() {
+		return Collections.singletonList(this);
 	}
 }

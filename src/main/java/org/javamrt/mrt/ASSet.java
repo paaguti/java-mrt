@@ -40,6 +40,7 @@ public class ASSet extends AS
 		return asSet.hashCode();
 	}
 
+	@Override
 	public List<AS> getASList() {
 		return this.asSet;
 	}

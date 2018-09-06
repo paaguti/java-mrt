@@ -19,8 +19,14 @@ public class ASConfedSet extends AS {
         this.asList.addAll(asList);
     }
 
+    @Override
     public String toString() {
         return asList.stream().map(AS::toString).collect(Collectors.joining(" ", "{", "}"));
+    }
+
+    @Override
+    public List<AS> getASList() {
+        return this.asList;
     }
 }
 
