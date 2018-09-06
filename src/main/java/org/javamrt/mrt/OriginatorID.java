@@ -16,7 +16,7 @@ public class OriginatorID implements Attribute {
 	}
 
 	public String toString() {
-		return "" + id;
+		return Long.toString(id);
 	}
 
 	public long originatorId() {

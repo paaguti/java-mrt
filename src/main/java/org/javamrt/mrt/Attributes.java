@@ -273,7 +273,7 @@ public class Attributes {
 		if (toStr != null)
 			return toStr;
 
-		toStr = new String();
+		toStr = "";
 
 		for (int i = MRTConstants.ATTRIBUTE_AS_PATH; i <= MRTConstants.ATTRIBUTE_AGGREGATOR; i++) {
 			if (attributes.elementAt(i) != null) {

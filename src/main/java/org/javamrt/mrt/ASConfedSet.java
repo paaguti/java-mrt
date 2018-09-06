@@ -7,22 +7,26 @@
 package org.javamrt.mrt;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ASConfedSet extends AS {
 
-	private LinkedList<AS> asList;
+    private LinkedList<AS> asList;
 
-	public ASConfedSet(LinkedList<AS> asList) {
-		this.asList = new LinkedList<AS>();
-		this.asList.addAll(asList);
-	}
+    public ASConfedSet(final List<AS> asList) {
+        this.asList = new LinkedList<>();
+        this.asList.addAll(asList);
+    }
 
+    @Override
+    public String toString() {
+        return asList.stream().map(AS::toString).collect(Collectors.joining(" ", "{", "}"));
+    }
 
-	public String toString() {
-		String result = "{";
-		for (AS as:asList)
-			result = result.concat(" "+as.toString());
-		return result.concat(" }");
-	}
+    @Override
+    public List<AS> getASList() {
+        return this.asList;
+    }
 }
 

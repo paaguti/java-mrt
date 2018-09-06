@@ -49,12 +49,14 @@ public class ClusterList implements Attribute {
 		return false;
 	}
 
-	public String toString() {
-		StringBuffer result = new StringBuffer();
+    public String toString() {
+        StringBuilder result = new StringBuilder();
 
-		for (int i = 0; i < clusterList.length; i++)
-			result.append(clusterList[i].getHostAddress() + " ");
+        for (final InetAddress aClusterList : clusterList) {
+            result.append(aClusterList.getHostAddress())
+                  .append(" ");
+        }
 
-		return result.toString();
-	}
+        return result.toString();
+    }
 }

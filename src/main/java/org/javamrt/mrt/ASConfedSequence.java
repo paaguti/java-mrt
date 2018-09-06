@@ -6,22 +6,25 @@
 
 package org.javamrt.mrt;
 
+import java.util.List;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
-public class ASConfedSequence
-	extends AS
-{
-	LinkedList<AS> asList;
+public class ASConfedSequence extends AS {
+    LinkedList<AS> asList;
 
-	public ASConfedSequence(LinkedList<AS> asList) {
-		this.asList = new LinkedList<AS>();
-		this.asList.addAll(asList);
-	}
+    public ASConfedSequence(List<AS> asList) {
+        this.asList = new LinkedList<>();
+        this.asList.addAll(asList);
+    }
 
-	public String toString() {
-		String result = "[";
-		for (AS as:asList)
-			result = result.concat(" "+as.toString());
-		return result.concat(" ]");
-	}
+    @Override
+    public String toString() {
+        return asList.stream().map(AS::toString).collect(Collectors.joining(" ", "[", "]"));
+    }
+
+    @Override
+    public List<AS> getASList() {
+        return this.asList;
+    }
 }

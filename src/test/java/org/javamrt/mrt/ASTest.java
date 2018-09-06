@@ -2,6 +2,9 @@ package org.javamrt.mrt;
 
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.testng.AssertJUnit.assertEquals;
 
 public class ASTest {
@@ -78,5 +81,15 @@ public class ASTest {
         assertEquals(false, new AS(65535L).is4Byte());
         assertEquals(true, new AS(65536L).is4Byte());
         assertEquals(true, new AS(0xFFFFFFFFL).is4Byte());
+    }
+
+    @Test
+    public void getAsList() {
+        final AS as1 = new AS(1L);
+        final AS as2 = new AS(2L);
+        assertEquals(Collections.singletonList(as1), as1.getASList());
+        assertEquals(Arrays.asList(as1, as2), new ASSet(Arrays.asList(as1, as2)).getASList());
+        assertEquals(Arrays.asList(as1, as2), new ASConfedSet(Arrays.asList(as1, as2)).getASList());
+        assertEquals(Arrays.asList(as1, as2), new ASConfedSequence(Arrays.asList(as1, as2)).getASList());
     }
 }
