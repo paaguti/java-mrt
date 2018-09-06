@@ -2,14 +2,19 @@ package org.javamrt.mrt;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.collections.Lists;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ASPathTest {
+
 
     // BGP4MP|1519047444|A|2001:478:124::146|25152|2405:6e00::/32|25152 6939 2299530082 133612 {18291} {18291}|IGP|2001:478:124::176|0|0||NAG|65512 10.247.255.147|
     private String as4update =
@@ -45,6 +50,63 @@ public class ASPathTest {
             ASPath asPath = mrtRecord.getASPath();
             Assert.assertEquals(asPath.toString(), "22822 54825 40138");
         }
+    }
+
+    @Test
+    public void testParseAsPathFromString() {
+        testParseAsPath("");
+        testParseAsPath("1", new AS(1));
+        testParseAsPath("1 1 1", new AS(1), new AS(1), new AS(1));
+        testParseAsPath("22822 22822 22822", new AS(22822), new AS(22822), new AS(22822));
+        testParseAsPath("1 2 3", new AS(1), new AS(2), new AS(3));
+        testParseAsPath("22822 54825 40138", new AS(22822), new AS(54825), new AS(40138));
+        testParseAsPath("(1 2 3)", new ASSet(Arrays.asList(new AS(1), new AS(2), new AS(3))));
+        testParseAsPath("(1 2) 3", new ASSet(Arrays.asList(new AS(1), new AS(2))), new AS(3));
+        testParseAsPath("1 (2 3)", new AS(1), new ASSet(Arrays.asList(new AS(2), new AS(3))));
+        testParseAsPath("(22822 54825 40138)", new ASSet(Arrays.asList(new AS(22822), new AS(54825), new AS(40138))));
+        testParseAsPath("(22822 54825) 40138", new ASSet(Arrays.asList(new AS(22822), new AS(54825))), new AS(40138));
+        testParseAsPath("22822 (54825 40138)", new AS(22822), new ASSet(Arrays.asList(new AS(54825), new AS(40138))));
+        testParseAsPath("1 (2 3) [4 5]",
+                        new AS(1),
+                        new ASSet(Arrays.asList(new AS(2), new AS(3))),
+                        new ASConfedSequence(new LinkedList<>(Arrays.asList(new AS(4), new AS(5)))));
+        testParseAsPath("1 (2 3) {4 5}",
+                        new AS(1),
+                        new ASSet(Arrays.asList(new AS(2), new AS(3))),
+                        new ASConfedSet(new LinkedList<>(Arrays.asList(new AS(4), new AS(5)))));
+    }
+
+    @Test
+    public void testOriginating() {
+        Assert.assertNull(new ASPath(Collections.emptyList()).getOriginating());
+        final AS as1 = new AS(1);
+        final AS as2 = new AS(2);
+        final AS as3 = new AS(3);
+        Assert.assertEquals(new ASPath(Collections.singletonList(as1)).getOriginating(), as1);
+        Assert.assertEquals(new ASPath(Arrays.asList(as1, as2, as3)).getOriginating(), as3);
+        Assert.assertEquals(new ASPath(Arrays.asList(as1, as1, as1)).getOriginating(), as1);
+        Assert.assertEquals(new ASPath(Arrays.asList(new ASSet(Arrays.asList(as1, as2)), as3)).getOriginating(), as3);
+        Assert.assertEquals(new ASPath(Arrays.asList(as1, new ASSet(Arrays.asList(as2, as3)))).getOriginating(),
+                            new ASSet(Arrays.asList(as2, as3)));
+    }
+
+    @Test
+    public void testTransiting() {
+        Assert.assertEquals(new ASPath(Collections.emptyList()).getTransiting(), Collections.emptyList());
+        final AS as1 = new AS(1);
+        final AS as2 = new AS(2);
+        final AS as3 = new AS(3);
+        Assert.assertEquals(new ASPath(Collections.singletonList(as1)).getTransiting(), Collections.emptyList());
+        Assert.assertEquals(new ASPath(Arrays.asList(as1, as2, as3)).getTransiting(), Arrays.asList(as1, as2));
+        Assert.assertEquals(new ASPath(Arrays.asList(as1, as1, as1)).getTransiting(), Arrays.asList(as1, as1));
+        Assert.assertEquals(new ASPath(Arrays.asList(new ASSet(Arrays.asList(as1, as2)), as3)).getTransiting(),
+                            Collections.singletonList(new ASSet(Arrays.asList(as1, as2))));
+        Assert.assertEquals(new ASPath(Arrays.asList(as1, new ASSet(Arrays.asList(as2, as3)))).getTransiting(),
+                            Collections.singletonList(as1));
+    }
+
+    private static void testParseAsPath(final String input, final AS... expected) {
+        Assert.assertEquals(ASPath.fromString(input).getPath(), Lists.newArrayList(expected));
     }
 
     public static List<MRTRecord> parseMrts(String base64) {
