@@ -277,19 +277,12 @@ public class ASPath implements Attribute {
      * @author paag
      */
     public String toString() {
-        try {
-            if (this.path.size() == 0) {
-                return "";
-            }
+        return asString(this.path);
+    }
 
-            String result = null;
-            for (int i = 0; i < this.path.size(); i++)
-                try {
-                    result = result.concat(" " + this.path.get(i).toString());
-                } catch (Exception e) {
-                    result = this.path.get(i).toString();
-                }
-            return result;
+    public static String asString(final List<AS> path) {
+        try {
+            return path.stream().map(AS::toString).collect(Collectors.joining(" "));
         } catch (Exception e) {
             return "";
         }

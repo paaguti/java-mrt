@@ -15,7 +15,7 @@ public class LocalPref implements Attribute {
 	}
 
 	public String toString() {
-		return "" + localPref;
+		return Long.toString(localPref);
 	}
 
 	public long getLocalPref() {

@@ -33,11 +33,11 @@ public class Community implements Attribute {
 	}
 
 	public String toString() {
-		return toStringBuffer(community).toString();
+		return toStringBuilder(community).toString();
 	}
 
-	private static StringBuffer toStringBuffer(byte[] buffer) {
-		StringBuffer result = new StringBuffer();
+	private static StringBuilder toStringBuilder(byte[] buffer) {
+		StringBuilder result = new StringBuilder();
 
 		if (null != buffer) {
 			int len = buffer.length;

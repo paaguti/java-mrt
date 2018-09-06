@@ -9,6 +9,7 @@ package org.javamrt.mrt;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // import org.javamrt.utils.RecordAccess;
 
@@ -60,10 +61,7 @@ public class ASSet extends AS
 	}
 
 	public String toString() {
-		String result = "(".concat(this.asSet.get(0).toString());
-		for (int i = 1; i < asSet.size(); i++)
-			result = result.concat(" ").concat(this.asSet.get(i).toString());
-		return result.concat(")");
+		return asSet.stream().map(AS::toString).collect(Collectors.joining(" ", "(", ")"));
 	}
 
 }
