@@ -6,6 +6,7 @@
 
 package org.javamrt.mrt;
 
+import org.javamrt.progs.route_btoa;
 import org.javamrt.utils.Debug;
 import org.javamrt.utils.RecordAccess;
 
@@ -254,7 +255,7 @@ public class Attributes {
                                 break;
 
 				default:
-					attributes.set(type, new UnsupportedAttribute(type, buffer));
+					route_btoa.System_err_println("Ignoring unknown attribute type " + type);
 					break;
 			}
 		}
