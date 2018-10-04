@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name = "Paquete análisis BGP-4" default = "rebuild">
-  <property name = "outputdir"  value = "."/>
-  <property name = "classdir"   value = "./bin" />
-  <property name = "sourcedir"  value = "./src" />
+  <property name = "outputdir"  value = "./target"/>
+  <property name = "classdir"   value = "./target/classes" />
+  <property name = "sourcedir"  value = "./src/main/java" />
   <property name = "debug"      value = "false" />
-  <property name = "mrt.main.class" value = "org.java-mrt.progs.route_btoa" />
+  <property name = "mrt.main.class" value = "org.javamrt.progs.route_btoa" />
 
   <target name = "cleansrc" description = "Borra los backups">
     <tstamp/>
