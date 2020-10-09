@@ -249,10 +249,12 @@ public class Attributes {
 				this.hasASPATHLimit = true;
 				break;
 
-                        case MRTConstants.LARGE_COMMUNITY:
-                                Attribute largeCommunity = new LargeCommunity(buffer);
-                                attributes.set(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY, largeCommunity);
-                                break;
+				case MRTConstants.LARGE_COMMUNITY:
+					if (buffer.length > 0) {
+						Attribute largeCommunity = new LargeCommunity(buffer);
+						attributes.set(MRTConstants.ATTRIBUTE_LARGE_COMMUNITY, largeCommunity);
+					}
+					break;
 
 				default:
 					route_btoa.System_err_println("Ignoring unknown attribute type " + type);
