@@ -18,19 +18,6 @@
       <tag>HEAD</tag>
   </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>ripe-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>https://artifacts.ripe.net/repository/maven-releases-ncc/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ripe-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://artifacts.ripe.net/repository/maven-snapshots-ncc/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
