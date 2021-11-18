@@ -257,7 +257,14 @@ public class Attributes {
 					break;
 
 				default:
-					route_btoa.System_err_println("Ignoring unknown attribute type " + type);
+					// make sure to not overwrite other attributes in the Vector,
+					// as index in the Vector is not the same as type value
+					if (type > MRTConstants.ATTRIBUTE_LARGE_COMMUNITY && type < MRTConstants.ATTRIBUTE_TOTAL) {
+						final UnsupportedAttribute attribute = new UnsupportedAttribute(type, buffer);
+						attributes.set(type, attribute);
+					} else {
+						route_btoa.System_err_println("Ignoring unknown attribute type " + type);
+					}
 					break;
 			}
 		}

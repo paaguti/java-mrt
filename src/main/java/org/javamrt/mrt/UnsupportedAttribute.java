@@ -1,5 +1,7 @@
 package org.javamrt.mrt;
 
+import org.javamrt.utils.RecordAccess;
+
 import java.util.Arrays;
 
 public class UnsupportedAttribute implements Attribute {
@@ -14,10 +16,7 @@ public class UnsupportedAttribute implements Attribute {
 
     @Override
     public String toString() {
-        return "UnsupportedAttribute{" +
-                "type=" + type +
-                ", buffer=" + Arrays.toString(buffer) +
-                '}';
+        return "Attribute type " + type + ": " + RecordAccess.arrayToString(buffer);
     }
 
     @Override
