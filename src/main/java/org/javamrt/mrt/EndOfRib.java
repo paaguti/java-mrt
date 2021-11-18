@@ -18,7 +18,7 @@ public class EndOfRib extends Bgp4Update {
         String peerString = MRTConstants.ipAddressString(this.peerIP, false);
         String attrString = updateAttr == null ? "" : updateAttr.toString();
 
-        return String.format("%s|%s||%s|%s|%s",
+        return String.format("%s|%s|EOR|%s|%s|%s",
                 updateStr, getTime(), peerString, peerAS, attrString);
     }
 }

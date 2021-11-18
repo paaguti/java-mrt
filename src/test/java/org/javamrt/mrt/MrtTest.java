@@ -176,7 +176,7 @@ public class MrtTest {
         final BGPFileReader bgpFileReader = new BGPFileReader(stream);
         final MRTRecord mrtRecord = bgpFileReader.readNext();
         assertEquals(mrtRecord.getClass(), EndOfRib.class);
-        assertEquals(mrtRecord.toString(), "BGP4MP|1527774250||187.16.220.193|263584|");
+        assertEquals(mrtRecord.toString(), "BGP4MP|1527774250|EOR|187.16.220.193|263584|");
     }
 
     @Test
@@ -186,6 +186,6 @@ public class MrtTest {
         final BGPFileReader bgpFileReader = new BGPFileReader(stream);
         final MRTRecord mrtRecord = bgpFileReader.readNext();
         assertEquals(mrtRecord.getClass(), EndOfRib.class);
-        assertEquals(mrtRecord.toString(), "BGP4MP|1527839889||2001:df0:2e8:1000:0:0:0:1|45896|||255.255.255.255|0|0||NAG||");
+        assertEquals(mrtRecord.toString(), "BGP4MP|1527839889|EOR|2001:df0:2e8:1000:0:0:0:1|45896|||255.255.255.255|0|0||NAG||");
     }
 }
