@@ -18,3 +18,14 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+*.iml
+*.ipr
+*.iws
+.idea
+target
+atlassian-ide-plugin.xml
+.settings
+.DS_Store
+
+*.swp
