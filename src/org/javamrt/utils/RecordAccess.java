@@ -14,7 +14,7 @@ public class RecordAccess
     return getUINT(buffer, offset, 4);
   }
 
-  static public long getUINT (byte[]buffer, int offset,int size)
+  static public long getUINT (byte[]buffer, int offset, int size)
   {
     long result = 0;
     //    try {

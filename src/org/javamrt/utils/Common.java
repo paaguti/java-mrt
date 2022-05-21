@@ -19,8 +19,7 @@ public class Common {
 	 * <b>UTC</b>,<br>
 	 * which is how the timestamps are managed in the RIPE-RR.
 	 */
-	private static Calendar cal = Calendar.getInstance(TimeZone
-			.getTimeZone("UTC"));
+	private static Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
 	/**
 	 * Calculate the timestamp for the beginning of month before <i>time</i> <br>
@@ -157,5 +156,4 @@ public class Common {
 				.get(Calendar.YEAR), cal2.get(Calendar.HOUR_OF_DAY), cal2
 				.get(Calendar.MINUTE), cal2.get(Calendar.SECOND));
 	}
-
 }

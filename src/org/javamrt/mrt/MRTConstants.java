@@ -95,6 +95,12 @@ public class MRTConstants {
 	public static final int RIB_IPV6_UNICAST = 4;
 	public static final int RIB_IPV6_MULTICAST = 5;
 	public static final int RIB_GENERIC = 6;
+	public static final int RIB_GEO_PEER_TABLE = 7;
+	public static final int RIB_IPV4_UNICAST_ADDPATH = 8;
+	public static final int RIB_IPV4_MULTICAST_ADDPATH = 9;
+	public static final int RIB_IPV6_UNICAST_ADDPATH = 10;
+	public static final int RIB_IPV6_MULTICAST_ADDPATH = 11;
+	public static final int RIB_GENERIC_AP = 12;
 
 	public static final int BGP4MP = 16;
 	public static final int BGP4MP_STATE_CHANGE = 0;
@@ -103,6 +109,12 @@ public class MRTConstants {
 	public static final int BGP4MP_SNAPSHOT = 3;
 	public static final int BGP4MP_MESSAGE_AS4 = 4;
 	public static final int BGP4MP_STATE_CHANGE_AS4 = 5;
+	public static final int BGP4MP_MESSAGE_LOCAL = 6;
+	public static final int BGP4MP_MESSAGE_LOCAL_AS4 = 7;
+	public static final int BGP4MP_MESSAGE_ADDPATH = 8;
+	public static final int BGP4MP_MESSAGE_AS4_ADDPATH = 9;
+	public static final int BGP4MP_MESSAGE_LOCAL_ADDPATH = 10;
+	public static final int BGP4MP_MESSAGE_LOCAL_AS4_ADDPATH = 11;
 
 	public static final int BGP4MSG_OPEN = 1;
 	public static final int BGP4MSG_UPDATE = 2;
@@ -116,12 +128,16 @@ public class MRTConstants {
 			return "BGP4MP_STATE_CHANGE";
 		case BGP4MP_MESSAGE:
 			return "BGP4MP_MESSAGE";
+		case BGP4MP_MESSAGE_ADDPATH:
+			return "BGP4MP_MESSAGE_ADDPATH";
 		case BGP4MP_ENTRY:
 			return "BGP4MP_ENTRY";
 		case BGP4MP_SNAPSHOT:
 			return "BGP4MP_SNAPSHOT";
 		case BGP4MP_MESSAGE_AS4:
 			return "BGP4MP_MESSAGE_AS4";
+		case BGP4MP_MESSAGE_AS4_ADDPATH:
+			return "BGP4MP_MESSAGE_AS4_ADDPATH";
 		case BGP4MP_STATE_CHANGE_AS4:
 			return "BGP4MP_STATE_CHANGE_AS4";
 		default:

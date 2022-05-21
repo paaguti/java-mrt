@@ -14,7 +14,7 @@ public class MpUnReach
     implements Attribute
 {
 	// TODO : why am I not using SAFI here ???
-  MpUnReach (byte[]buffer)
+  MpUnReach (byte[]buffer, boolean addPath)
     throws Exception
   {
     int offset = 0;
@@ -27,7 +27,7 @@ public class MpUnReach
 
     while (len > offset)
       {
-	Nlri base = new Nlri (buffer, offset, afi);
+	Nlri base = new Nlri (buffer, offset, afi, addPath);
 	offset += base.getOffset ();
 
 	nlriVector.addElement (base);

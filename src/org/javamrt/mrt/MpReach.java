@@ -19,15 +19,15 @@ public class MpReach implements Attribute {
 	 */
 	private int afi;
 	private int safi;
-	private InetAddress nextHop;
-	private Vector<Nlri> nlriVector;
+	private Vector<InetAddress> nextHop = new Vector<InetAddress>();
+	private Vector<Nlri> nlriVector = new Vector<Nlri>();
 
 	// private int snpaNo;
 	// private Vector < InetAddress > snpaVector;
 
-	MpReach(byte[] buffer) throws Exception {
+	MpReach(byte[] buffer, boolean addPath) throws Exception {
 		// snpaVector = new Vector < InetAddress > ();
-		nlriVector = new Vector<Nlri>();
+		
 
 		/**
 		 * +---------------------------------------------------------+
@@ -76,9 +76,15 @@ public class MpReach implements Attribute {
 				nhl = 16;
 		}
 
-		byte[] abuf = RecordAccess.getBytes(buffer,offset, nhl);
-		nextHop = InetAddress.getByAddress(abuf);
-		offset += nextHopLen;
+		byte[] abuf = RecordAccess.getBytes(buffer, offset, nhl);
+		nextHop.add(InetAddress.getByAddress(abuf));
+		offset += nhl;
+		if (nextHopLen == 32) {
+			// link local address
+			abuf = RecordAccess.getBytes(buffer, offset, nhl);
+			nextHop.add(InetAddress.getByAddress(abuf));
+			offset += nhl;
+		}
 
 		/**
 		 *
@@ -100,13 +106,18 @@ public class MpReach implements Attribute {
 
 		int snpaNo = RecordAccess.getU8(buffer, offset);
 
-		if (Debug.compileDebug)
-			Debug.println(" NEXT_HOP: " + nextHop.getHostAddress()
-					+ "\n SNPA_NO: " + snpaNo);
+		if (Debug.compileDebug) {
+			String debug = " NEXT_HOPs:\n";
+			for (InetAddress ia : nextHop) debug += ia.getHostAddress() + "\n";
+			debug += " SNPA_NO: " + snpaNo;
+			Debug.println(debug);
+		}
+			
+//			Debug.println( + for (InetAddress ia: nextHop) ia.getHostAddress()
+					
 
 		offset++;
 		for (int i = 0; i < snpaNo; i++) {
-
 			int snpaLen = RecordAccess.getU8(buffer, offset);
 			offset++;
 			/*
@@ -125,19 +136,18 @@ public class MpReach implements Attribute {
 		 * +---------------------------------------------------+
 		 */
 
-		while (offset < buffer.length) {
-			Nlri base = new Nlri(buffer, offset, afi);
+		while ((offset) < buffer.length) {
+			Nlri base = new Nlri(buffer, offset, afi, addPath);
 			offset += base.getOffset();
 			nlriVector.addElement(base);
 		}
-
 	}
 
 	public Vector<Nlri> getNlri() {
 		return nlriVector;
 	}
 
-	public InetAddress getNextHop() {
+	public Vector<InetAddress> getNextHops() {
 		return nextHop;
 	}
 
@@ -145,9 +155,11 @@ public class MpReach implements Attribute {
 	 * public Vector < InetAddress > getSNPA () { return snpaVector; }
 	 */
 	public String toString() {
-		String result = "NEXT HOP: " + nextHop.getHostAddress();
+		String result = "";
+		for (InetAddress ia : nextHop)
+			result += " NEXT HOP:" + ia.getHostAddress();
 		for (Nlri nlri : nlriVector)
-			result += "\n NRLI:" + nlri.toString();
+			result += " NRLI:" + nlri.toString();
 		return result;
 	}
 }

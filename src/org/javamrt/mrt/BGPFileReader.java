@@ -30,6 +30,18 @@ public class BGPFileReader {
 	private byte[] record;
 
 	private String toString;
+	
+	private long[] bgpId = null;
+	private org.javamrt.mrt.AS peerAS[] = null;
+	private java.net.InetAddress peerIP[] = null;
+	
+	private int recordlen = 0;
+	private int type = 0;
+	private int subtype = 0;
+	private long time = 0;
+
+	private long recordCounter = 0;
+
 	/*****
 	 *
 	 * public BGPFileReader (BufferedInputStream in)
@@ -83,8 +95,7 @@ public class BGPFileReader {
 	}
 
 	public BGPFileReader(File f) throws IOException {
-		if (!f.exists())
-			throw new java.io.FileNotFoundException();
+		if (!f.exists()) throw new java.io.FileNotFoundException();
 		FileInputStream inStream = new FileInputStream(f);
 		this.toString = f.getCanonicalPath();
 		if (this.toString.endsWith(".gz")) {
@@ -117,22 +128,7 @@ public class BGPFileReader {
 	public String toString() {
 		return this.toString;
 	}
-	/***
-	 *
-	 * MRTRecord readNext()
-	 *
-	 * returns next record on successful completion null on EOF
-	 *
-	 * throws Exception when something goes wrong
-	 */
-
-	private int recordlen = 0;
-	private int type = 0;
-	private int subtype = 0;
-	private long time = 0;
-
-	private long recordCounter = 0;
-
+	
 	/**
 	 * @return the number of MRT binary format records read.<br>
 	 * In the new MRT record formats, that has little or nothing<br>
@@ -163,8 +159,7 @@ public class BGPFileReader {
 			/*
 			 * Help GC
 			 */
-			if (record != null)
-				record = null;
+			if (record != null) record = null;
 			/*
 			 * if the queue is empty, read from the file
 			 */
@@ -220,18 +215,29 @@ public class BGPFileReader {
 				case MRTConstants.PEER_INDEX_TABLE:
 					parsePeerIndexTable();
 					break;
-				case 2:
-					parseTableDumpv2(MRTConstants.AFI_IPv4);
+				case MRTConstants.RIB_IPV4_UNICAST:
+					parseTableDumpv2(MRTConstants.AFI_IPv4, false);
 					break;
-				case 4:
-					parseTableDumpv2(MRTConstants.AFI_IPv6);
+				case MRTConstants.RIB_IPV6_UNICAST:
+					parseTableDumpv2(MRTConstants.AFI_IPv6, false);
 					break;
-				case 6:
+				case MRTConstants.RIB_GENERIC:
 					parseGenericRib();
 					break;
-				case 3:
-				case 5:
+				case MRTConstants.RIB_IPV4_MULTICAST:
+				case MRTConstants.RIB_IPV6_MULTICAST:
+				case MRTConstants.RIB_IPV4_MULTICAST_ADDPATH:
+				case MRTConstants.RIB_IPV6_MULTICAST_ADDPATH:
 					parseTableDumpv2Multicast();
+					break;
+				case MRTConstants.RIB_IPV4_UNICAST_ADDPATH:
+					parseTableDumpv2(MRTConstants.AFI_IPv4, true);
+					break;
+				case MRTConstants.RIB_IPV6_UNICAST_ADDPATH:
+					parseTableDumpv2(MRTConstants.AFI_IPv6, true);
+				break;
+				case MRTConstants.RIB_GENERIC_AP:
+					parseGenericRib();
 					break;
 				default:
 					throw new BGPFileReaderException(
@@ -268,10 +274,13 @@ public class BGPFileReader {
 		// System.out.println("parseBgp4mp("+MRTConstants.mpSubType(subtype)+")");
 		switch (subtype) {
 		case MRTConstants.BGP4MP_MESSAGE:
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE) ? 2 : 4, false);
 		case MRTConstants.BGP4MP_MESSAGE_AS4:
-			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE) ? 2
-					: 4);
-
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE_AS4) ? 4 : 2, false);
+		case MRTConstants.BGP4MP_MESSAGE_ADDPATH:
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE_ADDPATH) ? 2 : 4, true);
+		case MRTConstants.BGP4MP_MESSAGE_AS4_ADDPATH:
+			return parseBgp4Update((subtype == MRTConstants.BGP4MP_MESSAGE_AS4_ADDPATH) ? 4 : 2, true);
 			/*
 			 * TODO
 			 * TTOODDOO::::
@@ -282,7 +291,6 @@ public class BGPFileReader {
 
 		case MRTConstants.BGP4MP_ENTRY:
 			return parseBgp4Entry(RecordAccess.getU16(record, 6));
-
 		case MRTConstants.BGP4MP_STATE_CHANGE: {
 			/*
 			 * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
@@ -445,11 +453,7 @@ public class BGPFileReader {
 		// System.exit(0);
 	}
 
-	private long[] bgpId = null;
-	private org.javamrt.mrt.AS peerAS[] = null;
-	private java.net.InetAddress peerIP[] = null;
-
-	private void parseTableDumpv2(int NLRItype) throws Exception {
+	private void parseTableDumpv2(int NLRItype, boolean addPath) throws Exception {
 
 		if (Debug.compileDebug) {
 			Debug.printf("parseTableDumpv2(%d)\nheader:", NLRItype);
@@ -461,7 +465,7 @@ public class BGPFileReader {
 		int offset = 0;
 		long sequenceNo = RecordAccess.getU32(this.record, offset);
 		offset = 4;
-		Nlri nlri = new Nlri(this.record, offset, NLRItype);
+		Nlri nlri = new Nlri(this.record, offset, NLRItype, addPath);
 		offset += nlri.getOffset();
 
 		int entryCount = RecordAccess.getU16(this.record, offset);
@@ -489,7 +493,7 @@ public class BGPFileReader {
 			offset += 4;
 			int attrLen = RecordAccess.getU16(this.record, offset);
 			offset += 2;
-			Attributes attributes = new Attributes(record, attrLen, offset,4);
+			Attributes attributes = new Attributes(record, attrLen, offset, 4, false);
 			offset += attrLen;
 
 
@@ -500,7 +504,7 @@ public class BGPFileReader {
 		}
 	}
 
-	private MRTRecord parseBgp4Update(int asSize) throws Exception {
+	private MRTRecord parseBgp4Update(int asSize, boolean addPath) throws Exception {
 		// Bgp4Update update;
 
 		// TODO reconocer los AS de 4 bytes aquí
@@ -570,7 +574,7 @@ public class BGPFileReader {
 		if (Debug.compileDebug) Debug.printf("int unfeasibleLen = %d\n",unfeasibleLen);
 
 		for (int i = 0; i < unfeasibleLen;) {
-			Nlri wNlri = new Nlri(record, offset, afi);
+			Nlri wNlri = new Nlri(record, offset, afi, addPath);
 			offset += wNlri.getOffset();
 			i += wNlri.getOffset();
 
@@ -585,7 +589,7 @@ public class BGPFileReader {
 		if (attrLen > 0) {
 			Attributes attributes = null;
 			try {
-				attributes = new Attributes(record, attrLen, offset,asSize);
+				attributes = new Attributes(record, attrLen, offset, asSize, addPath);
 			} catch (RFC4893Exception rfce) {
 				//
 				// piggyback peer and time info
@@ -637,7 +641,7 @@ public class BGPFileReader {
 
 			if (Debug.compileDebug) Debug.debug("offset(%d) record.length (%d)\n",offset,record.length);
 			while (offset < record.length) {
-				Nlri aNlri = new Nlri(record, offset, afi);
+				Nlri aNlri = new Nlri(record, offset, afi, addPath);
 				offset += aNlri.getOffset();
 
 				recordFifo.add(new Advertisement(header, srcIP, srcAs, aNlri
@@ -682,11 +686,10 @@ public class BGPFileReader {
 		InetAddress nextHop = InetAddress.getByAddress(RecordAccess.getBytes(
 				record, offset, addrSize));
 		offset += addrSize;
-		Nlri prefix = new Nlri(record, offset, AFI);
+		Nlri prefix = new Nlri(record, offset, AFI, false);
 		offset += prefix.getOffset();
 
-		Attributes attrs = new Attributes(record, record.length - offset,
-				offset);
+		Attributes attrs = new Attributes(record, record.length - offset, offset, false);
 		ASPath aspath = attrs.getASPath();
 
 		AS neighborAS = null;
@@ -700,12 +703,12 @@ public class BGPFileReader {
 
 	private void parseGenericRib() throws BGPFileReaderException{
 		// TODO: implement
-		throw new BGPFileReaderException("TODO : parseGenericRib",new byte[1]);
+		throw new BGPFileReaderException("TODO : parseGenericRib", new byte[1]);
 	}
 
 	private void parseTableDumpv2Multicast() throws BGPFileReaderException {
 		// TODO: implement
-		throw new BGPFileReaderException("TODO: parseTableDumpv2Multicast()",new byte[1]);
+		throw new BGPFileReaderException("TODO: parseTableDumpv2Multicast()", new byte[1]);
 	}
 
 	public boolean eof() {

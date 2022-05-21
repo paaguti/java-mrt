@@ -22,36 +22,28 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	protected byte[] mask;
     protected byte[] broadcast;
 
-	// protected InetAddress baseAddress;
-	// protected InetAddress broadcastAddress;
 	protected int maskLength;
 
 	protected Prefix() {
-		//baseAddress = null;
-		//broadcastAddress = null;
 		this.base       = null;
 		this.mask       = null;
 		this.broadcast  = null;
 		this.maskLength = 0;
 	}
 
-	public Prefix(InetAddress addr, int maskLength)
-			throws PrefixMaskException {
+	public Prefix(InetAddress addr, int maskLength) throws PrefixMaskException {
 		setPrefix(addr.getAddress(), maskLength);
 	}
 
-	public Prefix(byte[] addr, int maskLength)
-			throws PrefixMaskException {
+	public Prefix(byte[] addr, int maskLength) throws PrefixMaskException {
 		setPrefix(addr, maskLength);
 	}
 
 	public static Prefix parseString(String s) throws NumberFormatException, UnknownHostException, PrefixMaskException {
-		return new Prefix(InetAddress.getByName(s.replaceAll("/.+$", "")),
-				Integer.parseInt(s.replaceAll("^[^/]+/", "")));
+		return new Prefix(InetAddress.getByName(s.replaceAll("/.+$", "")), Integer.parseInt(s.replaceAll("^[^/]+/", "")));
 	}
 
-	protected void setPrefix(byte[] addr, int maskLen)
-			throws PrefixMaskException {
+	protected void setPrefix(byte[] addr, int maskLen) throws PrefixMaskException {
 		/*
 		 * v2.00
 		 *   Check before anything else
@@ -120,8 +112,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 		return this.maskLength;
 	}
 
-	public void setMaskLength(int maskLength)
-	    throws PrefixMaskException, UnknownHostException {
+	public void setMaskLength(int maskLength) throws PrefixMaskException, UnknownHostException {
 	    byte[] temp= new byte[this.base.length];
 	    for (int i=0;i<this.base.length;i++)
 		temp[i] = base[i];
@@ -146,8 +137,7 @@ public class Prefix implements Comparable<Prefix>, Comparator<Prefix> {
 	}
 
 	public boolean includes(Prefix other) {
-		return this.matches(other.base)
-				&& this.matches(other.broadcast);
+		return this.matches(other.base) && this.matches(other.broadcast);
 	}
 
 	public boolean isIncludedBy(Prefix other) {
